@@ -4,8 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "start": "webpack-dev-server --config webpack.config.js"
+    "build": "npm run clean && npm run transpile && npm run copy_css && npm run copy_views",
+    "clean": "[ -d ./dist ] && npm run delete_dist || echo 'dist does not exist'",
+    "delete_dist": "rm -r ./dist && echo 'Successfully deleted dist'",
+    "transpile": "tsc && echo 'successfully transpiled'",
+    "copy_css": "cp -r public/css/ dist/public/",
+    "copy_views": "cp -r views/ dist/",
+    "start": "node dist/src/server.js"
   },
   "repository": {
     "type": "git",
@@ -18,15 +23,18 @@
   },
   "homepage": "https://github.com/Mitschelor/snake#readme",
   "dependencies": {
+    "@types/errorhandler": "^1.5.0",
+    "@types/express": "^4.17.8",
+    "@types/express-handlebars": "^3.1.0",
     "@types/node": "^14.14.6",
+    "@types/p5": "^0.9.1",
     "css-loader": "^5.0.0",
+    "errorhandler": "^1.5.1",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.2.0",
     "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^4.5.0",
+    "p5": "^1.1.9",
     "style-loader": "^2.0.0",
-    "ts-loader": "^8.0.9",
-    "typescript": "^4.0.5",
-    "webpack": "^5.4.0",
-    "webpack-cli": "^3.3.4",
-    "webpack-dev-server": "^3.11.0"
+    "typescript": "^4.0.5"
   }
 }
