@@ -3,6 +3,8 @@ class Snake {
     private positionY: number;
     private height: number;
     private width: number;
+    private xSpeed: number;
+    private ySpeed: number;
     private canvas;
     private ctx;
     constructor(opts: PaintOptions) {
@@ -10,27 +12,55 @@ class Snake {
         this.positionY = opts.positionY;
         this.height = opts.height;
         this.width = opts.width;
+        this.xSpeed = 0.5;
+        this.ySpeed = 0;
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.ctx = <CanvasRenderingContext2D>this.canvas.getContext("2d");
     }
-    paint(horizontalMovement: number, verticalMovement: number) {
-        this.ctx.clearRect(this.positionX - horizontalMovement, this.positionY - verticalMovement, this.width, this.height);
-        this.positionX += horizontalMovement;
-        this.positionY += verticalMovement;
-        console.log(`x: ${horizontalMovement},
-        y: ${verticalMovement}`);
-        this.ctx.fillRect(this.positionX, this.positionY, this.width, this.height);
+    updateSnake() {
+        this.positionX = this.positionX + this.xSpeed;
+        this.positionY = this.positionY + this.ySpeed;
+        console.log(`Update: xSpeed: ${this.xSpeed}
+        ySpeed: ${this.ySpeed}`);
+        this.ctx.clearRect(this.positionX - 2 * this.xSpeed, this.positionY - 2 * this.ySpeed, this.height + 10, this.width + 10);
+        this.ctx.fillRect(this.positionX, this.positionY, this.height, this.width);
     }
-    moveRight() {
-        setInterval(this.paint.bind(this, 0.5, 0), 10);
+    move(keyPressed: number) {
+        console.log(keyPressed);
+        let mover = setInterval(this.updateSnake.bind(this), 10);
+        clearInterval(mover);
+        switch (keyPressed) {
+            case 0:
+                this.xSpeed = 0.5;
+                this.ySpeed = 0;
+                console.log(`x: ${this.xSpeed}
+                y: ${this.ySpeed}`);
+                mover;
+                break;
+            case 1:
+                this.xSpeed = 0;
+                this.ySpeed = 0.5;
+                console.log(`x: ${this.xSpeed}
+                y: ${this.ySpeed}`);
+                mover;
+                break;
+            case 2:
+                this.xSpeed = -0.5;
+                this.ySpeed = 0;
+                console.log(`x: ${this.xSpeed}
+                y: ${this.ySpeed}`);
+                mover;
+                break;
+            case 3:
+                this.xSpeed = 0;
+                this.ySpeed = -0.5;
+                console.log(`x: ${this.xSpeed}
+                y: ${this.ySpeed}`);
+                mover;
+                break;
+        }
     }
-    moveDown() {
-        setInterval(this.paint.bind(this, 0, 0.5), 10);
-    }
-    /*stop(horizontalMovement: number, verticalMovement: number) {
-        this.ctx.clearRect(this.positionX - horizontalMovement, this.positionY - verticalMovement, this.width, this.height);
-        this.ctx.fillRect(this.positionX, this.positionY, this.width, this.height);
-    }*/
+
 }
 interface PaintOptions {
     positionX: number;

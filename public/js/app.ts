@@ -1,6 +1,3 @@
-let speedX: number;
-let speedY: number;
-
 const snake = new Snake({
     positionX: 20,
     positionY: 20,
@@ -8,6 +5,20 @@ const snake = new Snake({
     width: 20,
 });
 
+let key: number = 3;
+
+const getKeyPress = () => {
+    if (key >= 3) {
+        key = 0;
+        snake.move(key);
+        console.log(key);
+    } else {
+        key = key + 1;
+        snake.move(key);
+        console.log(key);
+    }
+};
+
 const startGame = () => {
-    snake.moveRight();
+    setInterval(getKeyPress, 2000);
 };
