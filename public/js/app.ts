@@ -5,20 +5,36 @@ const snake = new Snake({
     width: 20,
 });
 
-let key: number = 3;
-
-const getKeyPress = () => {
-    if (key >= 3) {
-        key = 0;
-        snake.move(key);
-        console.log(key);
-    } else {
-        key = key + 1;
-        snake.move(key);
-        console.log(key);
-    }
-};
+let key: number = 1;
+let xSpeed: number;
+let ySpeed: number;
 
 const startGame = () => {
-    setInterval(getKeyPress, 2000);
+    if (key > 3) {
+        key = 0;
+    } else {
+        key += 1;
+    }
+    console.log(key);
+    switch (key) {
+        case 0:
+            xSpeed = 0.5;
+            ySpeed = 0;
+            setInterval(snake.updateSnake.bind(xSpeed, ySpeed), 10);
+            break;
+        case 1:
+            xSpeed = 0;
+            ySpeed = 0.5;
+            setInterval(snake.updateSnake.bind(xSpeed, ySpeed), 10);
+            break;
+        case 2:
+            xSpeed = -0.5;
+            ySpeed = 0;
+            setInterval(snake.updateSnake.bind(xSpeed, ySpeed), 10);
+            break;
+        case 3:
+            xSpeed = 0;
+            ySpeed = -0.5;
+            setInterval(snake.updateSnake.bind(xSpeed, ySpeed), 10);
+    }
 };
