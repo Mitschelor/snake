@@ -5,36 +5,43 @@ const snake = new Snake({
     width: 20,
 });
 
-let key: number = 1;
 let xSpeed: number;
 let ySpeed: number;
 
+
 const startGame = () => {
-    if (key > 3) {
-        key = 0;
-    } else {
-        key += 1;
-    }
-    console.log(key);
-    switch (key) {
-        case 0:
-            xSpeed = 0.5;
-            ySpeed = 0;
-            setInterval(snake.updateSnake.bind(xSpeed, ySpeed), 10);
-            break;
-        case 1:
-            xSpeed = 0;
-            ySpeed = 0.5;
-            setInterval(snake.updateSnake.bind(xSpeed, ySpeed), 10);
-            break;
-        case 2:
+    snake.move(0.5, 0);
+};
+
+window.addEventListener("keydown", (ev: KeyboardEvent) => {
+    switch (ev.key) {
+        case "ArrowLeft":
+            console.log("left key");
+            // left key
             xSpeed = -0.5;
             ySpeed = 0;
-            setInterval(snake.updateSnake.bind(xSpeed, ySpeed), 10);
+            snake.move(xSpeed, ySpeed);
             break;
-        case 3:
+        case "ArrowUp":
+            console.log("up key");
+            // upKey
             xSpeed = 0;
             ySpeed = -0.5;
-            setInterval(snake.updateSnake.bind(xSpeed, ySpeed), 10);
+            snake.move(xSpeed, ySpeed);
+            break;
+        case "ArrowRight":
+            console.log("right key");
+            // right key
+            xSpeed = 0.5;
+            ySpeed = 0;
+            snake.move(xSpeed, ySpeed);
+            break;
+        case "ArrowDown":
+            console.log("down key");
+            // down key
+            xSpeed = 0;
+            ySpeed = 0.5;
+            snake.move(xSpeed, ySpeed);
+            break;
     }
-};
+});

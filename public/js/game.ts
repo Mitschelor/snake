@@ -27,6 +27,10 @@ class Snake {
         this.ctx.clearRect(this.positionX - 2 * this.xSpeed, this.positionY - 2 * this.ySpeed, this.height + 10, this.width + 10);
         this.ctx.fillRect(this.positionX, this.positionY, this.height, this.width);
     }
+    move(xSpeed: number, ySpeed: number) {
+        this.xSpeed = xSpeed;
+        this.ySpeed = ySpeed;
+    }
 }
 interface PaintOptions {
     positionX: number;
