@@ -17,31 +17,32 @@ window.addEventListener("keydown", (ev: KeyboardEvent) => {
     switch (ev.key) {
         case "ArrowLeft":
             console.log("left key");
-            // left key
             xSpeed = -0.5;
             ySpeed = 0;
+            clearInterval(snake.moveTheSnake);
             snake.move(xSpeed, ySpeed);
             break;
         case "ArrowUp":
             console.log("up key");
-            // upKey
             xSpeed = 0;
             ySpeed = -0.5;
+            clearInterval(snake.moveTheSnake);
             snake.move(xSpeed, ySpeed);
             break;
         case "ArrowRight":
             console.log("right key");
-            // right key
             xSpeed = 0.5;
             ySpeed = 0;
+            clearInterval(snake.moveTheSnake);
             snake.move(xSpeed, ySpeed);
             break;
         case "ArrowDown":
             console.log("down key");
-            // down key
             xSpeed = 0;
             ySpeed = 0.5;
+            clearInterval(snake.moveTheSnake);
             snake.move(xSpeed, ySpeed);
             break;
     }
 });
+
