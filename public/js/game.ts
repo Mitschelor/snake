@@ -37,8 +37,8 @@ class Snake {
             for (let x: number = this.positionX.length - 1; x > 0; x--) {
                 for (let y: number = this.positionY.length - 1; y > 0; y--) {
                     if (x > 1 || y > 1) {
-                        this.positionX[x] = this.positionX[x - 1] - this.xSpeed;
-                        this.positionY[y] = this.positionY[y - 1] - this.ySpeed;
+                        this.positionX[x] = this.positionX[x - 1] - this.xSpeed;                                    // I don't know why, but I have to subtract the speed
+                        this.positionY[y] = this.positionY[y - 1] - this.ySpeed;                                    // in order for it to work correctly.
                         this.ctx.clearRect(this.positionX[x - 1], this.positionY[y - 1], this.width, this.height);
                         this.ctx.fillRect(this.positionX[x], this.positionY[y], this.height, this.width);
                     } else if (this.xSpeed != 0) {
