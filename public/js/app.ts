@@ -22,7 +22,7 @@ const startGame = () => {
 const checkForFood = () => {
     if (snake.getPositionX() === food.getPositionX() && snake.getPositionY() === food.getPositionY()) {
         food.place();
-        snake.makeLonger();
+        snake.eat();
     } else {
         return;
     }

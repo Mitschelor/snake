@@ -63,7 +63,7 @@ class Snake {
         this.ySpeed = ySpeed;
         this.moveTheSnake = setInterval(this.updateSnake.bind(this), 500);
     }
-    makeLonger() {
+    eat() {
         this.positionX.push(this.positionX[this.positionX.length - 1] - this.xSpeed);
         this.positionY.push(this.positionY[this.positionY.length - 1] - this.ySpeed);
     }
