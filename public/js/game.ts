@@ -39,7 +39,7 @@ class Snake {
                     if (x > 1 || y > 1) {
                         this.positionX[x] = this.positionX[x - 1] - this.xSpeed;                                    // I don't know why, but I have to subtract the speed
                         this.positionY[y] = this.positionY[y - 1] - this.ySpeed;                                    // in order for it to work correctly.
-                        this.ctx.clearRect(this.positionX[x - 1], this.positionY[y - 1], this.width, this.height);
+                        this.ctx.clearRect(this.positionX[x - 1], this.positionY[y - 1], this.width, this.height);  // And for some reason, clearRect doesn't work for the tail.
                         this.ctx.fillRect(this.positionX[x], this.positionY[y], this.height, this.width);
                     } else if (this.xSpeed != 0) {
                         this.positionX[x] = this.positionX[0] - this.xSpeed;
