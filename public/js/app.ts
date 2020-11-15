@@ -10,11 +10,27 @@ const food = new Food();
 let xSpeed: number;
 let ySpeed: number;
 
+// Starts the game
 
 const startGame = () => {
     snake.move(20, 0);
     food.place();
 };
+
+// Checks, if the snake is at the same position as the food
+
+const checkForFood = () => {
+    if (snake.getPositionX() === food.getPositionX() && snake.getPositionY() === food.getPositionY()) {
+        food.place();
+        snake.makeLonger();
+    } else {
+        return;
+    }
+};
+
+setInterval(checkForFood, 100);
+
+// Keyboard controls
 
 window.addEventListener("keydown", (event: KeyboardEvent) => {
     switch (event.key) {
@@ -48,4 +64,3 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
             break;
     }
 });
-

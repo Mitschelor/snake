@@ -1,5 +1,6 @@
-const position: number = Math.floor(Math.random() * 600);
+let numbers: number[] = [1, 2, 4, 8];
 
-
-
-console.log();
+for (let number of numbers) {
+    number += 1;
+    console.log(number);
+}
