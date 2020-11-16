@@ -10,7 +10,8 @@
     "transpile": "tsc && echo 'successfully transpiled'",
     "copy_css": "cp -r public/css/ dist/public/",
     "copy_views": "cp -r views/ dist/",
-    "start": "node dist/src/server.js"
+    "start": "node dist/src/server.js",
+    "test": "node dist/public/js/test.js"
   },
   "repository": {
     "type": "git",
