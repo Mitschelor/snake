@@ -1,8 +1,6 @@
 const snake = new Snake({
     positionX: 0,
     positionY: 0,
-    height: 20,
-    width: 20,
 });
 
 const food = new Food();

@@ -1,8 +1,8 @@
 class Snake {
+    readonly height: number;
+    readonly width: number;
     private positionX: number[];
     private positionY: number[];
-    private height: number;
-    private width: number;
     private xSpeed: number;
     private ySpeed: number;
     public moveTheSnake?: any;
@@ -11,10 +11,10 @@ class Snake {
     constructor(opts: SnakeConstruction) {
         this.positionX = [opts.positionX];
         this.positionY = [opts.positionY];
-        this.height = opts.height;
-        this.width = opts.width;
         this.xSpeed = 20;
         this.ySpeed = 0;
+        this.height = 20;
+        this.width = 20;
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.ctx = <CanvasRenderingContext2D>this.canvas.getContext("2d");
     }
@@ -24,7 +24,7 @@ class Snake {
     getPositionY() {
         return this.positionY[0];
     }
-    updateSnake() {
+    update(): void {
         this.ctx.fillStyle = "Black";
         this.positionX[0] += this.xSpeed;
         this.positionY[0] += this.ySpeed;
@@ -37,9 +37,9 @@ class Snake {
             for (let x: number = this.positionX.length - 1; x > 0; x--) {
                 for (let y: number = this.positionY.length - 1; y > 0; y--) {
                     if (x > 1 || y > 1) {
-                        this.positionX[x] = this.positionX[x - 1];                                    // I don't know why, but I have to subtract the speed
-                        this.positionY[y] = this.positionY[y - 1];                                    // in order for it to work correctly.
-                        this.ctx.clearRect(this.positionX[x - 1], this.positionY[y - 1], this.width, this.height);  // And for some reason, clearRect doesn't work for the tail.
+                        this.positionX[x] = this.positionX[x - 1];                                                     // I don't know why, but I have to subtract the speed
+                        this.positionY[y] = this.positionY[y - 1];                                                     // in order for it to work correctly. But hey, problems that don't make sense, require solutions that don't make sense.
+                        this.ctx.clearRect(this.positionX[x - 1], this.positionY[y - 1], this.width, this.height);     // And for some reason, clearRect doesn't work for the tail.
                         this.ctx.fillRect(this.positionX[x], this.positionY[y], this.height, this.width);
                     } else if (this.xSpeed != 0) {
                         this.positionX[x] = this.positionX[0] - this.xSpeed;
@@ -61,9 +61,9 @@ class Snake {
     move(xSpeed: number, ySpeed: number) {
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
-        this.moveTheSnake = setInterval(this.updateSnake.bind(this), 500);
+        this.moveTheSnake = setInterval(this.update.bind(this), 500);
     }
-    eat() {
+    eat(): void {
         this.positionX.push(this.positionX[this.positionX.length - 1] - this.xSpeed);
         this.positionY.push(this.positionY[this.positionY.length - 1] - this.ySpeed);
     }
@@ -72,16 +72,14 @@ class Snake {
 interface SnakeConstruction {
     positionX: number;
     positionY: number;
-    height: number;
-    width: number;
 }
 
 class Food {
     private possibleLocations: number[];
     private positionX: number;
     private positionY: number;
-    private height: number;
-    private width: number;
+    readonly height: number;
+    readonly width: number;
     private canvas;
     private context;
 
