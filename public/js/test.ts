@@ -33,7 +33,7 @@ const isMovingOnYAxis = (): boolean => {
     }
 };
 
-const checkHowSnakeNeedsToBeMovedWhenOnChangeOfDirection = (firstPosition: number[], secondPosition: number[], speed: number, firstIndex: number, secondIndex: number) => {
+const initiateTurn = (firstPosition: number[], secondPosition: number[], speed: number, firstIndex: number, secondIndex: number) => {
     if (firstIndex === 1) {
         firstPosition[firstIndex] = firstPosition[firstIndex];
         console.log(`x: ${firstPosition}`);
@@ -56,7 +56,7 @@ const checkHowSnakeNeedsToBeMovedWhenOnChangeOfDirection = (firstPosition: numbe
     }
 };
 
-const checkHowSnakeNeedsToBeMovedInGeneral = (position: number[], speed: number, index: number) => {
+const moveWhenGoingStraight = (position: number[], speed: number, index: number) => {
     if (position[index] < position[index - 1]) {
         if (index === 1) {
             console.log("Index is 1");
@@ -77,6 +77,33 @@ const checkHowSnakeNeedsToBeMovedInGeneral = (position: number[], speed: number,
     }
 };
 
+const moveWhenInATurn = (firstPosition: number[], secondPosition: number[], speed: number, firstIndex: number, secondIndex: number) => {
+    if (firstIndex === 1) {
+        firstPosition[firstIndex] = firstPosition[firstIndex];
+        console.log(`x: ${firstPosition}`);
+    } else {
+        if (firstPosition[firstIndex] === firstPosition[firstIndex]) {
+            firstPosition[firstIndex] = firstPosition[firstIndex];
+            console.log(`x: ${firstPosition}`);
+        } else {
+            firstPosition[firstIndex] += speed;
+            console.log(`x: ${firstPosition}`);
+        }
+    }
+    if (secondIndex === 1) {
+        secondPosition[secondIndex] = secondPosition[secondIndex];
+        console.log(`y: ${secondPosition}`);
+    } else {
+        if (secondPosition[secondIndex] === secondPosition[secondIndex]) {
+            secondPosition[secondIndex] = secondPosition[secondIndex];
+            console.log(`y: ${secondPosition}`);
+        } else {
+            secondPosition[secondIndex] += speed;
+            console.log(`y: ${secondPosition}`);
+        }
+    }
+};
+
 const move = (xSpeed: number, ySpeed: number) => {
     if (isMovingOnYAxis()) {
         console.log("Is moving on y Axis");
@@ -85,9 +112,9 @@ const move = (xSpeed: number, ySpeed: number) => {
         for (let y: number = yPosition.length - 1; y > 0; y--) {
             for (let x: number = xPosition.length - 1; x > 0; x--) {
                 if (xPosition[x - 1] > xPosition[x]) {
-                    checkHowSnakeNeedsToBeMovedWhenOnChangeOfDirection(xPosition, yPosition, xSpeed, x, y);
+                    initiateTurn(xPosition, yPosition, xSpeed, x, y);
                 } else {
-                    checkHowSnakeNeedsToBeMovedInGeneral(yPosition, ySpeed, y);
+                    moveWhenGoingStraight(yPosition, ySpeed, y);
                 }
             }
         }
@@ -98,14 +125,25 @@ const move = (xSpeed: number, ySpeed: number) => {
         for (let x: number = xPosition.length - 1; x > 0; x--) {
             for (let y: number = yPosition.length - 1; y > 0; y--) {
                 if (yPosition[y - 1] > yPosition[y]) {
-                    checkHowSnakeNeedsToBeMovedWhenOnChangeOfDirection(yPosition, xPosition, ySpeed, y, x);
+                    initiateTurn(yPosition, xPosition, ySpeed, y, x);
                 } else {
-                    checkHowSnakeNeedsToBeMovedInGeneral(xPosition, xSpeed, x);
+                    moveWhenGoingStraight(xPosition, xSpeed, x);
                 }
             }
         }
     } else {
-        return;
+        console.log("Is in a curve");
+        xPosition[0] += xSpeed;
+        yPosition[0] += ySpeed;
+        for (let x: number = xPosition.length - 1; x > 0; x--) {
+            for (let y: number = yPosition.length - 1; y > 0; y--) {
+                if (xSpeed != 0) {
+                    moveWhenInATurn(xPosition, yPosition, xSpeed, x, y);
+                } else {
+                    moveWhenInATurn(yPosition, xPosition, ySpeed, y, x);
+                }
+            }
+        }
     }
 };
 
