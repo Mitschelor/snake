@@ -78,27 +78,39 @@ const moveWhenGoingStraight = (position: number[], speed: number, index: number)
 };
 
 const moveWhenInATurn = (firstPosition: number[], secondPosition: number[], speed: number, firstIndex: number, secondIndex: number) => {
-    if (firstIndex === 1) {
+    if (firstPosition[1] - firstPosition[0] > 20 || firstPosition[1] - firstPosition[0] < -20) {
+        firstPosition[1] += speed;
+    }
+    if (firstIndex === 0) {
         firstPosition[firstIndex] = firstPosition[firstIndex];
         console.log(`x: ${firstPosition}`);
     } else {
-        if (firstPosition[firstIndex] === firstPosition[firstIndex]) {
+        if (firstPosition[firstIndex] === firstPosition[firstIndex - 1]) {
+            console.debug(`${firstIndex} is 20`);
             firstPosition[firstIndex] = firstPosition[firstIndex];
             console.log(`x: ${firstPosition}`);
-        } else {
+        } else if (firstPosition[firstIndex] - firstPosition[firstIndex - 1] > 20 || firstPosition[firstIndex] - firstPosition[firstIndex - 1] < -20) {
             firstPosition[firstIndex] += speed;
+        } else {
+            firstPosition[firstIndex] = firstPosition[firstIndex];
             console.log(`x: ${firstPosition}`);
         }
     }
-    if (secondIndex === 1) {
+    if (secondPosition[1] - secondPosition[0] > 20 || secondPosition[1] - secondPosition[0] < -20) {
+        secondPosition[1] += speed;
+    }
+    if (secondIndex === 0) {
         secondPosition[secondIndex] = secondPosition[secondIndex];
         console.log(`y: ${secondPosition}`);
     } else {
-        if (secondPosition[secondIndex] === secondPosition[secondIndex]) {
+        if (secondPosition[secondIndex] === secondPosition[secondIndex - 1]) {
+            console.debug(`${secondIndex} is 20`);
             secondPosition[secondIndex] = secondPosition[secondIndex];
             console.log(`y: ${secondPosition}`);
-        } else {
+        } else if (secondPosition[secondIndex] - secondPosition[secondIndex - 1] >= 20 || secondPosition[secondIndex] - secondPosition[secondIndex - 1] <= -20) {
             secondPosition[secondIndex] += speed;
+        } else {
+            secondPosition[secondIndex] = secondPosition[secondIndex];
             console.log(`y: ${secondPosition}`);
         }
     }
