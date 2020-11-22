@@ -28,123 +28,14 @@ class Snake {
     getPositionY() {
         return this.positionY[0];
     }
-    isMovingOnXAxis(): boolean {
-        for (let y: number = this.positionY.length - 1; y > 0; y--) {
-            if (this.positionY[y] === this.positionY[y - 1]) {
-                this.counter += 1;
-            } else {
-                this.counter = this.counter;
-            }
-        }
-        if (this.counter === this.positionY.length) {
+    clearCanvas(): void {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+    isCollision(xPosition: number[], yPosition: number[], index: number): boolean {
+        if (xPosition[index] === this.positionX[0] && yPosition[index] === this.positionY[0] && index != 0) {
             return true;
         } else {
             return false;
-        }
-    }
-    isMovingOnYAxis(): boolean {
-        for (let x: number = this.positionX.length - 1; x > 0; x--) {
-            if (this.positionX[x] === this.positionX[x - 1]) {
-                this.counter += 1;
-            } else {
-                this.counter = this.counter;
-            }
-        }
-        if (this.counter === this.positionX.length) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    howManyValuesAreTheSame(position: number[]) {
-        this.counter = 0;
-        for (let i: number = 0; i < position.length - 1; i++) {
-            if (position[i] === position[i - 1]) {
-                this.counter += 1;
-            } else {
-                this.counter = this.counter;
-            }
-        }
-        return this.counter;
-    }
-    initiateTurn(firstPosition: number[], secondPosition: number[], speed: number, firstIndex: number, secondIndex: number) {
-        if (firstIndex === 1) {
-            firstPosition[firstIndex] = firstPosition[firstIndex];
-            console.log(`x: ${firstPosition}`);
-        } else {
-            firstPosition[firstIndex] += speed;
-            console.log(`x: ${firstPosition}`);
-        }
-        if (secondIndex === 1) {
-            if (secondPosition[secondIndex] < secondPosition[secondIndex - 1]) {
-                secondPosition[secondIndex] += speed;
-                console.log(`y: ${secondPosition}`);
-            } else {
-                secondPosition[secondIndex] = secondPosition[secondIndex];
-            }
-        } else if (secondIndex > 1 && secondPosition[secondIndex] < secondPosition[secondIndex - 1]) {
-            secondPosition[secondIndex] += speed;
-            console.log(`y: ${secondPosition}`);
-        } else {
-            secondPosition[secondIndex] = secondPosition[secondIndex];
-        }
-    }
-    moveWhenGoingStraight(position: number[], speed: number, index: number) {
-        if (position[index] < position[index - 1]) {
-            if (index === 1) {
-                console.log("Index is 1");
-                if (position[index] === position[index + 1]) {
-                    position[index] += speed;
-                    console.log(`x:: ${position}`);
-                } else {
-                    position[index] = position[index];
-                    console.log(`x: ${position}`);
-                }
-            } else {
-                position[index] += speed;
-                console.log(`x: ${position}`);
-            }
-        } else {
-            position[index] = position[index];
-            console.log(`x: ${position}`);
-        }
-    }
-    moveWhenInATurn(firstPosition: number[], secondPosition: number[], speed: number, firstIndex: number, identicalValues: number) {
-        console.log(`Identical: ${identicalValues}`);
-        if (firstPosition[1] - firstPosition[0] > 20 || firstPosition[1] - firstPosition[0] < -20) {
-            firstPosition[1] += speed;
-        }
-        if (firstIndex === 0 || firstIndex === 1) {
-            firstPosition[firstIndex] = firstPosition[firstIndex];
-            console.log(`x: ${firstPosition}`);
-        } else {
-            if (firstPosition[firstIndex] === firstPosition[firstIndex - 1]) {
-                console.log(`${firstIndex} is 20`);
-                firstPosition[firstIndex] = firstPosition[firstIndex];
-                console.log(`x: ${firstPosition}`);
-            } else if (firstPosition[firstIndex] - firstPosition[firstIndex - 1] > 20 || firstPosition[firstIndex] - firstPosition[firstIndex - 1] < -20) {
-                firstPosition[firstIndex] += speed;
-            } else {
-                firstPosition[firstIndex] = firstPosition[firstIndex];
-                console.log(`x: ${firstPosition}`);
-            }
-        }
-        if (secondPosition[1] - secondPosition[0] > 20 || secondPosition[1] - secondPosition[0] < -20) {
-            secondPosition[1] += speed;
-        }
-        if (firstIndex === 0 || firstIndex === 1) {
-            secondPosition[firstIndex] = secondPosition[firstIndex];
-            console.log(`y: ${secondPosition}`);
-        } else {
-            if (identicalValues === firstIndex) {
-                secondPosition[firstIndex] = secondPosition[firstIndex];
-            } else {
-                if (secondPosition[firstIndex] === secondPosition[firstIndex - 1]) {
-                    secondPosition[firstIndex] = secondPosition[firstIndex];
-                } else {
-                    secondPosition[firstIndex] += speed;
-                }
-            }
         }
     }
     update(): void {
@@ -183,99 +74,22 @@ class Snake {
                     this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
                 }
                 else {
-                    // this.positionX[index] = this.positionX[index - 1];
-                    // this.positionY[index] = this.positionY[index - 1];
                     this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
+                }
+            }
+            for (let index: number = this.positionX.length - 1; index > 0; index--) {
+                if (this.isCollision(this.positionX, this.positionY, index)) {
+                    clearInterval(this.moveTheSnake);
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    this.ctx.fillText("Game over!", 250, 250, 400);
+                    this.positionX = [0];
+                    this.positionY = [0];
+                    return;
                 }
             }
             console.log(`x: ${this.positionX}
             y: ${this.positionY}`);
         }
-
-        // if (this.isMovingOnYAxis()) {
-        //     console.log("Is moving on y Axis");
-        //     this.positionX[0] += this.xSpeed;
-        //     this.positionY[0] += this.ySpeed;
-        //     for (let y: number = this.positionY.length - 1; y > 0; y--) {
-        //         for (let x: number = this.positionX.length - 1; x > 0; x--) {
-        //             if (this.positionX[x - 1] > this.positionX[x]) {
-        //                 this.initiateTurn(this.positionX, this.positionY, this.xSpeed, x, y);
-        //                 this.ctx.clearRect(this.positionX[0] - this.xSpeed, this.positionY[0] - this.ySpeed, this.width, this.height);
-        //                 this.ctx.fillRect(this.positionX[0], this.positionY[0], this.height, this.width);
-        //             } else {
-        //                 this.moveWhenGoingStraight(this.positionY, this.ySpeed, y);
-        //                 this.ctx.clearRect(this.positionX[0] - this.xSpeed, this.positionY[0] - this.ySpeed, this.width, this.height);
-        //                 this.ctx.fillRect(this.positionX[0], this.positionY[0], this.height, this.width);
-        //             }
-        //         }
-        //     }
-        // } else if (this.isMovingOnXAxis()) {
-        //     console.log("Is moving on x Axis");
-        //     this.positionX[0] += this.xSpeed;
-        //     this.positionY[0] += this.ySpeed;
-        //     for (let x: number = this.positionX.length - 1; x > 0; x--) {
-        //         for (let y: number = this.positionY.length - 1; y > 0; y--) {
-        //             if (this.positionY[y - 1] > this.positionY[y]) {
-        //                 this.initiateTurn(this.positionY, this.positionX, this.ySpeed, y, x);
-        //                 this.ctx.clearRect(this.positionX[0] - this.xSpeed, this.positionY[0] - this.ySpeed, this.width, this.height);
-        //                 this.ctx.fillRect(this.positionX[0], this.positionY[0], this.height, this.width);
-        //             } else {
-        //                 this.moveWhenGoingStraight(this.positionX, this.xSpeed, x);
-        //                 this.ctx.clearRect(this.positionX[0] - this.xSpeed, this.positionY[0] - this.ySpeed, this.width, this.height);
-        //                 this.ctx.fillRect(this.positionX[0], this.positionY[0], this.height, this.width);
-        //             }
-        //         }
-        //     }
-        // } else {
-        //     console.log("Is in a curve");
-        //     this.positionX[0] += this.xSpeed;
-        //     this.positionY[0] += this.ySpeed;
-        //     const identicalValuesX: number = this.howManyValuesAreTheSame(this.positionX);
-        //     const identicalValuesY: number = this.howManyValuesAreTheSame(this.positionY);
-        //     for (let x: number = this.positionX.length - 1; x > 0; x--) {
-        //         if (this.xSpeed != 0) {
-        //             this.moveWhenInATurn(this.positionX, this.positionY, this.xSpeed, x, identicalValuesY);
-        //             this.ctx.clearRect(this.positionX[0] - this.xSpeed, this.positionY[0] - this.ySpeed, this.width, this.height);
-        //             this.ctx.fillRect(this.positionX[0], this.positionY[0], this.height, this.width);
-        //         } else {
-        //             this.moveWhenInATurn(this.positionY, this.positionX, this.ySpeed, x, identicalValuesX);
-        //             this.ctx.clearRect(this.positionX[0] - this.xSpeed, this.positionY[0] - this.ySpeed, this.width, this.height);
-        //             this.ctx.fillRect(this.positionX[0], this.positionY[0], this.height, this.width);
-        //         }
-        //     }
-        // }
-        // this.ctx.fillStyle = "Black";
-        // this.positionX[0] += this.xSpeed;
-        // this.positionY[0] += this.ySpeed;
-        // if (this.positionX.length < 2 && this.positionY.length < 2) {
-        //     this.ctx.clearRect(this.positionX[0] - this.xSpeed, this.positionY[0] - this.ySpeed, this.width, this.height);
-        //     this.ctx.fillRect(this.positionX[0], this.positionY[0], this.height, this.width);
-        // } else {
-        //     this.ctx.clearRect(this.positionX[0] - this.xSpeed, this.positionY[0] - this.ySpeed, this.width, this.height);
-        //     this.ctx.fillRect(this.positionX[0], this.positionY[0], this.height, this.width);
-        //     for (let x: number = this.positionX.length - 1; x > 0; x--) {
-        //         for (let y: number = this.positionY.length - 1; y > 0; y--) {
-        //             if (x > 1 || y > 1) {
-        //                 this.positionX[x] = this.positionX[x - 1];                                                     // I don't know why, but I have to subtract the speed
-        //                 this.positionY[y] = this.positionY[y - 1];                                                     // in order for it to work correctly. But hey, problems that don't make sense, require solutions that don't make sense.
-        //                 this.ctx.clearRect(this.positionX[x - 1], this.positionY[y - 1], this.width, this.height);     // And for some reason, clearRect doesn't work for the tail.
-        //                 this.ctx.fillRect(this.positionX[x], this.positionY[y], this.height, this.width);
-        //             } else if (this.xSpeed != 0) {
-        //                 this.positionX[x] = this.positionX[0] - this.xSpeed;
-        //                 this.positionY[y] = this.positionY[0];
-        //                 this.ctx.clearRect(this.positionX[x], this.positionY[y], this.width, this.height);
-        //                 this.ctx.fillRect(this.positionX[x], this.positionY[y], this.height, this.width);
-        //             } else if (this.ySpeed != 0) {
-        //                 this.positionX[x] = this.positionX[0];
-        //                 this.positionY[y] = this.positionY[0] - this.ySpeed;
-        //                 this.ctx.clearRect(this.positionX[x - 1], this.positionY[y - 1], this.width, this.height);
-        //                 this.ctx.fillRect(this.positionX[x], this.positionY[y], this.height, this.width);
-        //             }
-        //         }
-        //     }
-        //     console.log(`x: ${this.positionX}
-        //             y: ${this.positionY}`);
-        // }
     }
     move(xSpeed: number, ySpeed: number) {
         this.xSpeed = xSpeed;
@@ -301,6 +115,7 @@ class Food {
     private positionY: number;
     readonly height: number;
     readonly width: number;
+    public foodPlacer?: any;
     private canvas;
     private context;
 
@@ -313,12 +128,15 @@ class Food {
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.context = <CanvasRenderingContext2D>this.canvas.getContext("2d");
     }
+    draw() {
+        this.context.fillStyle = "Red";
+        this.context.clearRect(this.positionX, this.positionY, this.width, this.height);
+        this.context.fillRect(this.positionX, this.positionY, this.width, this.height);
+    }
     place() {
         this.positionX = this.possibleLocations[Math.floor(Math.random() * 30)];
         this.positionY = this.possibleLocations[Math.floor(Math.random() * 30)];
-        this.context.fillStyle = "Red";
-        this.context.clearRect(this.positionX, this.positionY, this.canvas.width, this.canvas.height);
-        this.context.fillRect(this.positionX, this.positionY, this.width, this.height);
+        this.foodPlacer = setInterval(this.draw.bind(this), 500);
     }
     getPositionX() {
         return this.positionX;

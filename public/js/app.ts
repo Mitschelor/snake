@@ -11,6 +11,7 @@ let ySpeed: number;
 // Starts the game
 
 const startGame = () => {
+    snake.clearCanvas();
     snake.move(20, 0);
     food.place();
 };
@@ -19,6 +20,7 @@ const startGame = () => {
 
 const checkForFood = () => {
     if (snake.getPositionX() === food.getPositionX() && snake.getPositionY() === food.getPositionY()) {
+        clearInterval(food.foodPlacer);
         food.place();
         snake.eat();
     } else {
