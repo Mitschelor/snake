@@ -34,7 +34,7 @@ class Snake {
             return false;
         }
     }
-    goesThroughWall(): boolean {
+    wantsToGoThroughWall(): boolean {
         if (this.positionX[0] <= -20 || this.positionX[0] >= 600 || this.positionY[0] <= -20 || this.positionY[0] >= 600) {
             return true;
         } else {
@@ -78,7 +78,7 @@ class Snake {
                     this.positionY[index] = this.positionY[index - 1] - ySpeed;
                     this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
                 } else {
-                    if (this.goesThroughWall()) {
+                    if (this.wantsToGoThroughWall()) {
                         this.letGoThroughWall(index);
                     } else {
                         this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
@@ -101,7 +101,7 @@ class Snake {
                 }
                 else {
                     console.log("Now!");
-                    if (this.goesThroughWall()) {
+                    if (this.wantsToGoThroughWall()) {
                         this.letGoThroughWall(index);
                     } else {
                         this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
