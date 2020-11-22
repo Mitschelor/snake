@@ -62,9 +62,3 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
             break;
     }
 });
-
-
-// window.addEventListener("click", (event: MouseEvent) => {
-//     snake.eat();
-// });
-

@@ -34,6 +34,28 @@ class Snake {
             return false;
         }
     }
+    goesThroughWall(): boolean {
+        if (this.positionX[0] <= -20 || this.positionX[0] >= 600 || this.positionY[0] <= -20 || this.positionY[0] >= 600) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    letGoThroughWall(index: number) {
+        if (this.positionX[0] <= -20) {
+            this.positionX[0] = 580;
+            this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
+        } else if (this.positionX[0] >= 600) {
+            this.positionX[0] = 0;
+            this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
+        } else if (this.positionY[0] <= -20) {
+            this.positionY[0] = 580;
+            this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
+        } else {
+            this.positionY[0] = 0;
+            this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
+        }
+    }
     die() {
         clearInterval(this.moveTheSnake);
         clearInterval(food.foodPlacer);
@@ -49,18 +71,18 @@ class Snake {
         }
         this.positionX[0] += this.xSpeed;
         this.positionY[0] += this.ySpeed;
-        if (this.positionX.length < 2) {
-            this.ctx.fillRect(this.positionX[0], this.positionY[0], this.height, this.width);
-            console.log(`x: ${this.positionX}
-            y: ${this.positionY}`);
-        } else if (this.positionX.length < 3) {
+        if (this.positionX.length < 3) {
             for (let index: number = this.positionX.length - 1; index >= 0; index--) {
                 if (index > 0) {
                     this.positionX[index] = this.positionX[index - 1] - xSpeed;
                     this.positionY[index] = this.positionY[index - 1] - ySpeed;
                     this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
                 } else {
-                    this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
+                    if (this.goesThroughWall()) {
+                        this.letGoThroughWall(index);
+                    } else {
+                        this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
+                    }
                 }
             }
             console.log(`Is < 3
@@ -78,7 +100,12 @@ class Snake {
                     this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
                 }
                 else {
-                    this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
+                    console.log("Now!");
+                    if (this.goesThroughWall()) {
+                        this.letGoThroughWall(index);
+                    } else {
+                        this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
+                    }
                 }
             }
             for (let index: number = this.positionX.length - 1; index > 0; index--) {
