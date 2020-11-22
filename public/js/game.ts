@@ -6,27 +6,23 @@ class Snake {
     private xSpeed: number;
     private ySpeed: number;
     public moveTheSnake?: any;
-    private counter: number;
-    private total: number;
     private canvas;
     private ctx;
-    constructor(opts: SnakeConstruction) {
-        this.positionX = [opts.positionX];
-        this.positionY = [opts.positionY];
+    constructor() {
+        this.positionX = [0, 0];
+        this.positionY = [0, 0];
         this.xSpeed = 20;
         this.ySpeed = 0;
         this.height = 20;
         this.width = 20;
-        this.counter = 1;
-        this.total = this.positionX.length;
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.ctx = <CanvasRenderingContext2D>this.canvas.getContext("2d");
     }
     getPositionX() {
-        return this.positionX[0];
+        return this.positionX;
     }
     getPositionY() {
-        return this.positionY[0];
+        return this.positionY;
     }
     clearCanvas(): void {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -37,6 +33,14 @@ class Snake {
         } else {
             return false;
         }
+    }
+    die() {
+        clearInterval(this.moveTheSnake);
+        clearInterval(food.foodPlacer);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillText("Game over!", 250, 250, 400);
+        this.positionX = [0];
+        this.positionY = [0];
     }
     update(): void {
         this.ctx.fillStyle = "Black";
@@ -79,11 +83,7 @@ class Snake {
             }
             for (let index: number = this.positionX.length - 1; index > 0; index--) {
                 if (this.isCollision(this.positionX, this.positionY, index)) {
-                    clearInterval(this.moveTheSnake);
-                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                    this.ctx.fillText("Game over!", 250, 250, 400);
-                    this.positionX = [0];
-                    this.positionY = [0];
+                    this.die();
                     return;
                 }
             }
@@ -97,16 +97,11 @@ class Snake {
         this.moveTheSnake = setInterval(this.update.bind(this), 500);
     }
     eat(): void {
-        this.positionX.push(this.positionX[this.positionX.length - 1] - this.xSpeed);
-        this.positionY.push(this.positionY[this.positionY.length - 1] - this.ySpeed);
-        console.log(`Snake ate: x: ${this.positionX}
-        y: ${this.positionY}`);
+        for (let i: number = 0; i < 2; i++) {
+            this.positionX.push(this.positionX[this.positionX.length - 1] - this.xSpeed);
+            this.positionY.push(this.positionY[this.positionY.length - 1] - this.ySpeed);
+        }
     }
-}
-
-interface SnakeConstruction {
-    positionX: number;
-    positionY: number;
 }
 
 class Food {
@@ -115,6 +110,7 @@ class Food {
     private positionY: number;
     readonly height: number;
     readonly width: number;
+    private counter: number;
     public foodPlacer?: any;
     private canvas;
     private context;
@@ -125,6 +121,7 @@ class Food {
         this.positionY = this.possibleLocations[Math.floor(Math.random() * 30)];
         this.height = 20;
         this.width = 20;
+        this.counter = 0;
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.context = <CanvasRenderingContext2D>this.canvas.getContext("2d");
     }
@@ -136,7 +133,8 @@ class Food {
     place() {
         this.positionX = this.possibleLocations[Math.floor(Math.random() * 30)];
         this.positionY = this.possibleLocations[Math.floor(Math.random() * 30)];
-        this.foodPlacer = setInterval(this.draw.bind(this), 500);
+        food.foodPlacer = setInterval(food.draw.bind(food), 10);
+        this.foodPlacer;
     }
     getPositionX() {
         return this.positionX;

@@ -1,7 +1,4 @@
-const snake = new Snake({
-    positionX: 0,
-    positionY: 0,
-});
+const snake = new Snake();
 
 const food = new Food();
 
@@ -11,6 +8,7 @@ let ySpeed: number;
 // Starts the game
 
 const startGame = () => {
+    clearInterval(snake.moveTheSnake);
     snake.clearCanvas();
     snake.move(20, 0);
     food.place();
@@ -19,7 +17,7 @@ const startGame = () => {
 // Checks, if the snake is at the same position as the food
 
 const checkForFood = () => {
-    if (snake.getPositionX() === food.getPositionX() && snake.getPositionY() === food.getPositionY()) {
+    if (snake.getPositionX()[0] === food.getPositionX() && snake.getPositionY()[0] === food.getPositionY()) {
         clearInterval(food.foodPlacer);
         food.place();
         snake.eat();
@@ -64,3 +62,9 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
             break;
     }
 });
+
+
+// window.addEventListener("click", (event: MouseEvent) => {
+//     snake.eat();
+// });
+
