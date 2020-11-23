@@ -150,6 +150,16 @@ class Snake {
         }
     }
 
+    private calculatePositionOfTheNewPartOfTheTail(position: number[], speed: number) {
+        let newPosition: number;
+        if (speed === 0) {
+            newPosition = position[position.length - 1];
+        } else {
+            newPosition = position[position.length - 1] - speed;
+        }
+        return newPosition;
+    }
+
     move(xSpeed: number, ySpeed: number) {
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
@@ -158,8 +168,8 @@ class Snake {
 
     eat(): void {
         for (let i: number = 0; i < 2; i++) {
-            this.positionX.push(this.positionX[this.positionX.length - 1] - this.xSpeed);
-            this.positionY.push(this.positionY[this.positionY.length - 1] - this.ySpeed);
+            this.positionX.push(this.calculatePositionOfTheNewPartOfTheTail(this.positionX, this.xSpeed));
+            this.positionY.push(this.calculatePositionOfTheNewPartOfTheTail(this.positionY, this.ySpeed));
         }
     }
 }
