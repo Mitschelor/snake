@@ -18,11 +18,11 @@ class Snake {
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.ctx = <CanvasRenderingContext2D>this.canvas.getContext("2d");
     }
-    getPositionX() {
+    getPositionX(): number[] {
         return this.positionX;
     }
 
-    getPositionY() {
+    getPositionY(): number[] {
         return this.positionY;
     }
 
@@ -34,45 +34,17 @@ class Snake {
         this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
     }
 
-    private updateThePositionOfTheHead(): void {
-        this.ctx.fillStyle = "Black";
-        this.cleanUpBehind();
-        this.positionX[0] += this.xSpeed;
-        this.positionY[0] += this.ySpeed;
-    }
-
-    private drawTheHead(index: number): void {
-        if (this.wantsToGoThroughWall()) {
-            this.letGoThroughWall(index);
-        } else {
-            this.draw(index);
-        }
-    }
-
-    private updateAndDrawTheTailBase(index: number): void {
-        this.positionX[index] = this.positionX[index - 1] - this.xSpeed;
-        this.positionY[index] = this.positionY[index - 1] - this.ySpeed;
-        this.draw(index);
-    }
-
-    private updateAndDrawTheTail(index: number): void {
-        this.positionX[index] = this.positionX[index - 1];
-        this.positionY[index] = this.positionY[index - 1];
-        this.draw(index);
-    }
-
     private cleanUpBehind(): void {
         for (let index: number = this.positionX.length - 1; index >= 0; index--) {
             this.ctx.clearRect(this.positionX[index], this.positionY[index], this.width, this.height);
         }
     }
 
-    private isCollision(xPosition: number[], yPosition: number[], index: number): boolean {
-        if (xPosition[index] === this.positionX[0] && yPosition[index] === this.positionY[0] && index != 0) {
-            return true;
-        } else {
-            return false;
-        }
+    private updateThePositionOfTheHead(): void {
+        this.ctx.fillStyle = "Black";
+        this.cleanUpBehind();
+        this.positionX[0] += this.xSpeed;
+        this.positionY[0] += this.ySpeed;
     }
 
     private wantsToGoThroughWall(): boolean {
@@ -99,13 +71,32 @@ class Snake {
         }
     }
 
-    private die(): void {
-        clearInterval(this.moveTheSnake);
-        clearInterval(food.foodPlacer);
-        this.clearCanvas();
-        this.ctx.fillText("Game over!", 250, 250, 400);
-        this.positionX = [0];
-        this.positionY = [0];
+    private drawTheHead(index: number): void {
+        if (this.wantsToGoThroughWall()) {
+            this.letGoThroughWall(index);
+        } else {
+            this.draw(index);
+        }
+    }
+
+    private updateAndDrawTheTailBase(index: number): void {
+        this.positionX[index] = this.positionX[index - 1] - this.xSpeed;
+        this.positionY[index] = this.positionY[index - 1] - this.ySpeed;
+        this.draw(index);
+    }
+
+    private updateAndDrawTheTail(index: number): void {
+        this.positionX[index] = this.positionX[index - 1];
+        this.positionY[index] = this.positionY[index - 1];
+        this.draw(index);
+    }
+
+    private isCollision(xPosition: number[], yPosition: number[], index: number): boolean {
+        if (xPosition[index] === this.positionX[0] && yPosition[index] === this.positionY[0] && index != 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private movementOfTheShortSnake(): void {
@@ -130,6 +121,15 @@ class Snake {
         }
     }
 
+    private die(): void {
+        clearInterval(this.moveTheSnake);
+        clearInterval(food.foodPlacer);
+        this.clearCanvas();
+        this.ctx.fillText("Game over!", 250, 250, 400);
+        this.positionX = [20, 0];
+        this.positionY = [20, 20];
+    }
+
     private checkForCollision(): void {
         for (let index: number = this.positionX.length - 1; index > 0; index--) {
             if (this.isCollision(this.positionX, this.positionY, index)) {
@@ -150,7 +150,7 @@ class Snake {
         }
     }
 
-    private calculatePositionOfTheNewPartOfTheTail(position: number[], speed: number) {
+    private calculatePositionOfTheNewPartOfTheTail(position: number[], speed: number): number {
         let newPosition: number;
         if (speed === 0) {
             newPosition = position[position.length - 1];
@@ -160,7 +160,7 @@ class Snake {
         return newPosition;
     }
 
-    move(xSpeed: number, ySpeed: number) {
+    move(xSpeed: number, ySpeed: number): void {
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
         this.moveTheSnake = setInterval(this.updateAndDrawEntireSnake.bind(this), 500);
