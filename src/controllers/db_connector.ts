@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import { Scores } from "../../models/scores";
 
 dotenv.config();
 
@@ -11,3 +12,17 @@ mongoose.connect(uri, {
 })
     .then(() => console.log("success"))
     .catch((error) => console.log(error));
+
+
+
+const saveStuff = () => {
+    const instance = new Scores({
+        userId: 0,
+        score: 75
+    });
+    instance.save()
+        .then(() => console.log("success"))
+        .catch((error) => console.log(error));
+};
+
+saveStuff();

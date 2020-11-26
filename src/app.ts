@@ -3,7 +3,7 @@ import path from "path";
 import exphbs from "express-handlebars";
 
 import * as indexController from "./controllers/index";
-// import * as dataSaver from "./controllers/db_connector";
+import * as dataSaver from "./controllers/db_connector";
 
 const app = express();
 
