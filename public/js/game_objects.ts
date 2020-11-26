@@ -48,7 +48,8 @@ class Snake {
     }
 
     private wantsToGoThroughWall(): boolean {
-        if (this.positionX[0] <= -20 || this.positionX[0] >= 600 || this.positionY[0] <= -20 || this.positionY[0] >= 600) {
+        let isTouchingWall: boolean = this.positionX[0] <= -20 || this.positionX[0] >= 600 || this.positionY[0] <= -20 || this.positionY[0] >= 600;
+        if (isTouchingWall) {
             return true;
         } else {
             return false;
@@ -56,13 +57,16 @@ class Snake {
     }
 
     private letGoThroughWall(index: number): void {
-        if (this.positionX[0] <= -20) {
+        const isAtLeftWall: boolean = this.positionX[0] <= -20;
+        const isAtRightWall: boolean = this.positionX[0] >= 600;
+        const isAtTopWall: boolean = this.positionY[0] <= -20;
+        if (isAtLeftWall) {
             this.positionX[0] = 580;
             this.draw(index);
-        } else if (this.positionX[0] >= 600) {
+        } else if (isAtRightWall) {
             this.positionX[0] = 0;
             this.draw(index);
-        } else if (this.positionY[0] <= -20) {
+        } else if (isAtTopWall) {
             this.positionY[0] = 580;
             this.draw(index);
         } else {
@@ -92,7 +96,8 @@ class Snake {
     }
 
     private isCollision(xPosition: number[], yPosition: number[], index: number): boolean {
-        if (xPosition[index] === this.positionX[0] && yPosition[index] === this.positionY[0] && index != 0) {
+        let isBitingItsTail: boolean = xPosition[index] === this.positionX[0] && yPosition[index] === this.positionY[0] && index != 0;
+        if (isBitingItsTail) {
             return true;
         } else {
             return false;
@@ -101,7 +106,8 @@ class Snake {
 
     private movementOfTheShortSnake(): void {
         for (let index: number = this.positionX.length - 1; index >= 0; index--) {
-            if (index > 0) {
+            let isTheHead: boolean = index > 0;
+            if (isTheHead) {
                 this.updateAndDrawTheTailBase(index);
             } else {
                 this.drawTheHead(index);
@@ -111,9 +117,11 @@ class Snake {
 
     private movementOfTheLongSnake(): void {
         for (let index: number = this.positionX.length - 1; index >= 0; index--) {
-            if (index === 1) {
+            let isTheTailBase: boolean = index === 1;
+            let isTheHead: boolean = index > 1;
+            if (isTheTailBase) {
                 this.updateAndDrawTheTailBase(index);
-            } else if (index > 1) {
+            } else if (isTheHead) {
                 this.updateAndDrawTheTail(index);
             } else {
                 this.drawTheHead(index);
@@ -152,7 +160,8 @@ class Snake {
 
     private calculatePositionOfTheNewPartOfTheTail(position: number[], speed: number): number {
         let newPosition: number;
-        if (speed === 0) {
+        let speedIsZero: boolean = speed === 0;
+        if (speedIsZero) {
             newPosition = position[position.length - 1];
         } else {
             newPosition = position[position.length - 1] - speed;

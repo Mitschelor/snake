@@ -17,7 +17,8 @@ const startGame = () => {
 // Checks, if the snake is at the same position as the food
 
 const checkForFood = () => {
-    if (snake.getPositionX()[0] === food.getPositionX() && snake.getPositionY()[0] === food.getPositionY()) {
+    const snakeIsNearFood: boolean = snake.getPositionX()[0] === food.getPositionX() && snake.getPositionY()[0] === food.getPositionY();
+    if (snakeIsNearFood) {
         clearInterval(food.foodPlacer);
         food.place();
         snake.eat();
