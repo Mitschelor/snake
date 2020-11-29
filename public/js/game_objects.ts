@@ -160,8 +160,9 @@ class Snake {
     }
 
     private updateAndDrawEntireSnake(): void {
+        const snakeIsShort: boolean = this.positionX.length < 3;
         this.updateThePositionOfTheHead();
-        if (this.positionX.length < 3) {
+        if (snakeIsShort) {
             this.movementOfTheShortSnake();
             this.checkForCollision();
         } else {
@@ -170,7 +171,7 @@ class Snake {
         }
     }
 
-    private calculatePositionOfTheNewPartOfTheTail(position: number[], speed: number): number {
+    private positionOfTheNewPartOfTheTail(position: number[], speed: number): number {
         let newPosition: number;
         let speedIsZero: boolean = speed === 0;
         if (speedIsZero) {
@@ -189,8 +190,8 @@ class Snake {
 
     eat(): void {
         for (let i: number = 0; i < 2; i++) {
-            this.positionX.push(this.calculatePositionOfTheNewPartOfTheTail(this.positionX, this.xSpeed));
-            this.positionY.push(this.calculatePositionOfTheNewPartOfTheTail(this.positionY, this.ySpeed));
+            this.positionX.push(this.positionOfTheNewPartOfTheTail(this.positionX, this.xSpeed));
+            this.positionY.push(this.positionOfTheNewPartOfTheTail(this.positionY, this.ySpeed));
         }
     }
 }
