@@ -1,16 +1,12 @@
 const snake = new Snake();
 const food = new Food();
 
-// Starts the game
-
 const startGame = () => {
     snake.stopMovement();
     snake.clearCanvas();
     snake.move(snake.right);
     food.place();
 };
-
-// Checks, if the snake is at the same position as the food
 
 const checkForFood = () => {
     const snakeIsNearFood: boolean = snake.getPositionX()[0] === food.getPositionX() && snake.getPositionY()[0] === food.getPositionY();
@@ -24,8 +20,6 @@ const checkForFood = () => {
 };
 
 setInterval(checkForFood, 100);
-
-// Keyboard controls
 
 window.addEventListener("keydown", (event: KeyboardEvent) => {
     switch (event.key) {

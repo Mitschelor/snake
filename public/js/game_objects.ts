@@ -107,8 +107,8 @@ class Snake {
         this.draw(index);
     }
 
-    private isCollision(xPosition: number[], yPosition: number[], index: number): boolean {
-        let isBitingItsTail: boolean = xPosition[index] === this.positionX[0] && yPosition[index] === this.positionY[0] && index != 0;
+    private isCollision(index: number): boolean {
+        let isBitingItsTail: boolean = this.positionX[index] === this.positionX[0] && this.positionY[index] === this.positionY[0] && index != 0;
         if (isBitingItsTail) {
             return true;
         } else {
@@ -152,7 +152,7 @@ class Snake {
 
     private checkForCollision(): void {
         for (let index: number = this.positionX.length - 1; index > 0; index--) {
-            if (this.isCollision(this.positionX, this.positionY, index)) {
+            if (this.isCollision(index)) {
                 this.die();
                 return;
             }
@@ -185,7 +185,7 @@ class Snake {
     move(direction: number[]): void {
         this.xSpeed = direction[0];
         this.ySpeed = direction[1];
-        this.moveTheSnake = setInterval(this.updateAndDrawEntireSnake.bind(this), 500);
+        this.moveTheSnake = setInterval(this.updateAndDrawEntireSnake.bind(this), 170);
     }
 
     eat(): void {
