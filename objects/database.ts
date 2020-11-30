@@ -24,7 +24,7 @@ export class DataBase {
         this.password = userData.password;
     }
 
-    connectToDataBase() {
+    connect() {
         mongoose.connect(this.uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
