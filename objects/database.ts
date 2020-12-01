@@ -56,25 +56,29 @@ export class DataBase {
         this.upload(instance);
     };
 
+    private findDocument(input: Data, name: string) {
+        switch (name) {
+            case "score":
+                this.saveScore({
+                    userId: input.userId,
+                    score: input.score
+                });
+                break;
+            case "userData":
+                this.saveUser({
+                    firstName: input.firstName,
+                    lastName: input.lastName,
+                    userName: input.userName,
+                    email: input.email,
+                    password: input.password
+                });
+                break;
+        }
+    }
+
     save(input: Data, documentNames: string[]) {
         for (let name of documentNames) {
-            switch (name) {
-                case "score":
-                    this.saveScore({
-                        userId: input.userId,
-                        score: input.score
-                    });
-                    break;
-                case "userData":
-                    this.saveUser({
-                        firstName: input.firstName,
-                        lastName: input.lastName,
-                        userName: input.userName,
-                        email: input.email,
-                        password: input.password
-                    });
-                    break;
-            }
+            this.findDocument(input, name);
         }
     };
 }
