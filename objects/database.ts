@@ -7,54 +7,76 @@ dotenv.config();
 
 export class DataBase {
     readonly uri: any;
-    public userId?: number;
-    public score?: number;
-    public firstName?: string;
-    public lastName?: string;
-    public userName?: string;
-    public email?: string;
-    public password?: string;
+    readonly score: string;
+    readonly userData: string;
 
-    constructor(userData: Data) {
+    constructor() {
         this.uri = process.env.DB_URI;
-        this.userId = userData.userId;
-        this.firstName = userData.firstName;
-        this.lastName = userData.lastName;
-        this.userName = userData.userName;
-        this.email = userData.email;
-        this.password = userData.password;
+        this.score = "score";
+        this.userData = "userData";
     }
 
     private connect() {
         mongoose.connect(this.uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-        }).catch((error) => console.log(error));
+        })
+            .then(() => console.log("success"))
+            .catch((error) => console.log(error));
+    };
+
+    private upload(instance: mongoose.Document) {
+        instance.save().then(() => {
+            mongoose.connection.close();
+            console.log("Score saved");
+        }).catch((error) => {
+            mongoose.connection.close();
+            console.log(error);
+        });
     }
 
-    saveScore() {
+    private saveScore(input: Data) {
         this.connect();
         const instance = new Scores({
-            userId: this.userId,
-            score: this.score
+            userId: input.userId,
+            score: input.score
         });
+        this.upload(instance);
+    };
 
-        instance.save().catch((error) => console.log(error));
-    }
-
-    saveUser() {
+    private saveUser(input: Data) {
         this.connect();
         const instance = new UserData({
-            userId: this.userId,
-            firstname: this.firstName,
-            lastname: this.lastName,
-            username: this.userName,
-            email: this.email,
-            password: this.password
+            firstname: input.firstName,
+            lastname: input.lastName,
+            username: input.userName,
+            email: input.email,
+            password: input.password
         });
+        this.upload(instance);
+    };
 
-        instance.save().catch((error) => console.log(error));
-    }
+    save(input: Data, documentNames: string[]) {
+        for (let name of documentNames) {
+            switch (name) {
+                case "score":
+                    this.saveScore({
+                        userId: input.userId,
+                        score: input.score
+                    });
+                    break;
+                case "userData":
+                    this.saveUser({
+                        firstName: input.firstName,
+                        lastName: input.lastName,
+                        userName: input.userName,
+                        email: input.email,
+                        password: input.password
+                    });
+                    break;
+            }
+        }
+    };
 }
 
 interface Data {
@@ -66,10 +88,3 @@ interface Data {
     email?: string,
     password?: string;
 }
-
-const database = new DataBase({
-    userId: 1,
-    score: 2
-});
-
-database.saveScore();

@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export class User {
-    public userId: number;
     public firstName: string;
     public lastName: string;
     public email: string;
@@ -11,7 +10,6 @@ export class User {
     protected uri: any;
 
     constructor(userData: UserData) {
-        this.userId = userData.userId;
         this.firstName = userData.firstName;
         this.lastName = userData.lastName;
         this.email = userData.email;
