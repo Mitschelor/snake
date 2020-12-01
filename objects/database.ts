@@ -66,3 +66,10 @@ interface Data {
     email?: string,
     password?: string;
 }
+
+const database = new DataBase({
+    userId: 1,
+    score: 2
+});
+
+database.saveScore();

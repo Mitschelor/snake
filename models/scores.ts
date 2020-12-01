@@ -14,4 +14,4 @@ const scoreSchema = new Schema({
         timestamps: true
     });
 
-export const Scores = mongoose.model("Scores", scoreSchema);
+export const Scores = mongoose.model("Score", scoreSchema);
