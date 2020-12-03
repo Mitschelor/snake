@@ -23,12 +23,12 @@ export class DataBase {
         })
             .then(() => console.log("success"))
             .catch((error) => console.log(error));
-    };
+    }
 
     private upload(instance: mongoose.Document) {
         instance.save().then(() => {
             mongoose.connection.close();
-            console.log("Score saved");
+            console.log("Saved");
         }).catch((error) => {
             mongoose.connection.close();
             console.log(error);
@@ -42,7 +42,7 @@ export class DataBase {
             score: input.score
         });
         this.upload(instance);
-    };
+    }
 
     private saveUser(input: Data) {
         this.connect();
@@ -54,9 +54,9 @@ export class DataBase {
             password: input.password
         });
         this.upload(instance);
-    };
+    }
 
-    private findDocument(input: Data, name: string) {
+    private findDocumentAndSaveData(input: Data, name: string) {
         switch (name) {
             case "score":
                 this.saveScore({
@@ -78,9 +78,9 @@ export class DataBase {
 
     save(input: Data, documentNames: string[]) {
         for (let name of documentNames) {
-            this.findDocument(input, name);
+            this.findDocumentAndSaveData(input, name);
         }
-    };
+    }
 }
 
 interface Data {
