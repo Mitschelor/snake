@@ -2,10 +2,12 @@ import mongoose from "mongoose";
 import { UserData } from "../models/user_data";
 import { Scores } from "../models/scores";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
+import { User } from "./user";
 
 dotenv.config();
 
-export class DataBase {
+class Database {
     readonly uri: any;
     readonly score: string;
     readonly userData: string;
@@ -16,7 +18,7 @@ export class DataBase {
         this.userData = "userData";
     }
 
-    private connect() {
+    protected connect() {
         mongoose.connect(this.uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -25,47 +27,53 @@ export class DataBase {
             .catch((error) => console.log(error));
     }
 
-    private upload(instance: mongoose.Document) {
+    protected closeConnection() {
+        mongoose.connection.close();
+    }
+}
+
+export class Datasaver extends Database {
+    protected upload(instance: mongoose.Document) {
         instance.save().then(() => {
-            mongoose.connection.close();
+            this.closeConnection();
             console.log("Saved");
         }).catch((error) => {
-            mongoose.connection.close();
+            this.closeConnection();
             console.log(error);
         });
     }
 
-    private saveScore(input: Data) {
+    protected saveScore(input: Data) {
         this.connect();
         const instance = new Scores({
-            userId: input.userId,
             score: input.score
         });
         this.upload(instance);
     }
 
-    private saveUser(input: Data) {
+    protected saveUser(input: Data) {
         this.connect();
         const instance = new UserData({
             firstname: input.firstName,
             lastname: input.lastName,
             username: input.userName,
             email: input.email,
-            password: input.password
+            password: input.password,
+            score: input.score
         });
         this.upload(instance);
     }
 
-    private findDocumentAndSaveData(input: Data, name: string) {
+    protected findDocumentAndSaveData(input: Data, name: string) {
         switch (name) {
             case "score":
                 this.saveScore({
-                    userId: input.userId,
                     score: input.score
                 });
                 break;
             case "userData":
                 this.saveUser({
+                    score: input.score,
                     firstName: input.firstName,
                     lastName: input.lastName,
                     userName: input.userName,
@@ -83,9 +91,67 @@ export class DataBase {
     }
 }
 
+export class Registrator extends Datasaver {
+
+    protected user(credential: string) {
+        this.connect();
+        const user = UserData.findOne({
+            "email": credential,
+        }).catch((error) => {
+            console.log(error);
+            this.closeConnection();
+        });
+        if (!user) {
+            this.connect();
+            const user = UserData.findOne({
+                "username": credential,
+            }).catch((error) => {
+                console.log(error);
+                this.closeConnection();
+            });
+        }
+        return user;
+    }
+
+    protected userIsAlreadyRegistered(userData: unknown): boolean {
+        const isRegistered: boolean = userData != undefined;
+        if (isRegistered) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    protected EmailOrUsernameAreRegistered(input: Data): boolean {
+        let counter: number = 0;
+        for (let credential in input) {
+            this.user(credential).then((result) => {
+                if (this.userIsAlreadyRegistered(result)) {
+                    counter++;
+                } else {
+                    counter;
+                }
+            });
+        }
+        const isRegistered: boolean = counter > 0;
+        if (isRegistered) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    saveUser(input: Data) {
+        if (this.EmailOrUsernameAreRegistered(input)) {
+            console.log("Error: Is already Registered");
+        } else {
+            this.save(input, [this.userData]);
+        }
+    }
+}
+
 interface Data {
-    userId?: number,
-    score?: number,
+    score?: number[],
     firstName?: string,
     lastName?: string,
     userName?: string,

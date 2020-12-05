@@ -20,7 +20,11 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    score: [{
+        type: Number,
+        required: false
+    }]
 }, { timestamps: true });
 
 export const UserData = mongoose.model("User", userSchema);
