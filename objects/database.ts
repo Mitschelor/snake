@@ -92,7 +92,6 @@ export class Datasaver extends Database {
 }
 
 export class Registrator extends Datasaver {
-
     protected user(credential: string) {
         this.connect();
         const user = UserData.findOne({
