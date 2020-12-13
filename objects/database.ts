@@ -29,11 +29,12 @@ class Database {
 
     protected closeConnection() {
         mongoose.connection.close();
+        console.log("Connection closed");
     }
 }
 
 export class Datasaver extends Database {
-    protected upload(instance: mongoose.Document) {
+    private upload(instance: mongoose.Document) {
         instance.save().then(() => {
             this.closeConnection();
             console.log("Saved");
@@ -43,7 +44,7 @@ export class Datasaver extends Database {
         });
     }
 
-    protected saveScore(input: Data) {
+    private saveScore(input: Data) {
         this.connect();
         const instance = new Scores({
             score: input.score
@@ -51,7 +52,7 @@ export class Datasaver extends Database {
         this.upload(instance);
     }
 
-    protected saveUser(input: Data) {
+    private saveUserData(input: Data) {
         this.connect();
         const instance = new UserData({
             firstname: input.firstName,
@@ -72,7 +73,7 @@ export class Datasaver extends Database {
                 });
                 break;
             case "userData":
-                this.saveUser({
+                this.saveUserData({
                     score: input.score,
                     firstName: input.firstName,
                     lastName: input.lastName,
@@ -92,24 +93,29 @@ export class Datasaver extends Database {
 }
 
 export class Registrator extends Datasaver {
-    protected user(credential: string) {
+    protected async downloadUserData(user: Data) {
         this.connect();
-        const user = UserData.findOne({
-            "email": credential,
+        const foundEmail: Promise<void | mongoose.Document | null> = UserData.findOne({
+            "email": user.email,
+        }).then((result) => {
+            return result;
         }).catch((error) => {
             console.log(error);
-            this.closeConnection();
         });
-        if (!user) {
-            this.connect();
-            const user = UserData.findOne({
-                "username": credential,
-            }).catch((error) => {
-                console.log(error);
-                this.closeConnection();
-            });
-        }
-        return user;
+        const foundUsername = UserData.findOne({
+            "username": user.userName
+        }).then((result) => {
+            return result;
+        }).catch((error) => {
+            console.log(error);
+        });
+        const email: any = await foundEmail;
+        const username: any = await foundUsername;
+        const result: Data = {
+            email: email,
+            userName: username
+        };
+        return result;
     }
 
     protected userIsAlreadyRegistered(userData: unknown): boolean {
@@ -121,31 +127,45 @@ export class Registrator extends Datasaver {
         }
     }
 
-    protected EmailOrUsernameAreRegistered(input: Data): boolean {
-        let counter: number = 0;
-        for (let credential in input) {
-            this.user(credential).then((result) => {
-                if (this.userIsAlreadyRegistered(result)) {
-                    counter++;
-                } else {
-                    counter;
-                }
-            });
-        }
-        const isRegistered: boolean = counter > 0;
-        if (isRegistered) {
+    protected thisEmailIsRegistered(result: Data): boolean {
+        if (result.email != null) {
             return true;
         } else {
             return false;
         }
     }
 
-    saveUser(input: Data) {
-        if (this.EmailOrUsernameAreRegistered(input)) {
-            console.log("Error: Is already Registered");
+    protected thisUsernameIsRegistered(result: Data): boolean {
+        if (result.userName != null) {
+            return true;
         } else {
+            return false;
+        }
+    }
+
+    protected checkIfDataIsAlreadyRegisteredAndSaveIfNotRegistered({ result, input }: { result: Data; input: Data; }) {
+        if (this.thisEmailIsRegistered(result)) {
+            console.log("Email is Registered, checking username...");
+            if (this.thisUsernameIsRegistered(result)) {
+                console.log("Username and Email are already registered");
+                this.closeConnection();
+            } else {
+                console.log("This username is already registered");
+                this.closeConnection();
+            }
+        } else if (this.thisUsernameIsRegistered(result)) {
+            console.log("Username is already registered.");
+            this.closeConnection();
+        } else {
+            console.log("Saving...");
             this.save(input, [this.userData]);
         }
+    }
+
+    saveUser(input: Data) {
+        this.downloadUserData(input).then((result) => {
+            this.checkIfDataIsAlreadyRegisteredAndSaveIfNotRegistered({ result, input });
+        });
     }
 }
 

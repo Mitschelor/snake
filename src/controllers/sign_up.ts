@@ -41,11 +41,23 @@
 //     password: "1234"
 // }, [datasaver.userData]);
 
+// import { Registrator } from "../../objects/database";
+
+// const registrator = new Registrator();
+
+// registrator.saveUser({
+//     email: "hallo@welt.ru",
+//     userName: "Mitschelor"
+// });
+
 import { Registrator } from "../../objects/database";
 
 const registrator = new Registrator();
 
 registrator.saveUser({
-    email: "hallo@welt.ru",
-    userName: "Mitschelor"
+    email: "michael@shnyder.cc",
+    userName: "Mitsche",
+    firstName: "Michael",
+    lastName: "Schnyder",
+    password: "fettitante69"
 });
