@@ -8,8 +8,6 @@ export const showSignUpForm = (req: Request, res: Response) => {
     });
 };
 
-
-
 export const saveUser = (req: Request, res: Response) => {
     const registrator = new Registrator();
     registrator.saveUser({
