@@ -3,7 +3,6 @@ import { UserData } from "../models/user_data";
 import { Scores } from "../models/scores";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
-import { User } from "./user";
 
 dotenv.config();
 
@@ -143,6 +142,14 @@ export class Registrator extends Datasaver {
         }
     }
 
+    private hashPasswordAndSaveUserData(input: Data) {
+        console.log("Saving...");
+        bcrypt.hash(input.password, 10).then((hash) => {
+            input.password = hash;
+            this.save(input, [this.userData]);
+        }).catch((error) => console.log(error));
+    }
+
     protected checkIfDataIsAlreadyRegisteredAndSaveIfNotRegistered({ result, input }: { result: Data; input: Data; }) {
         if (this.thisEmailIsRegistered(result)) {
             console.log("Email is Registered, checking username...");
@@ -150,15 +157,14 @@ export class Registrator extends Datasaver {
                 console.log("Username and Email are already registered");
                 this.closeConnection();
             } else {
-                console.log("This username is already registered");
+                console.log("This email is already registered");
                 this.closeConnection();
             }
         } else if (this.thisUsernameIsRegistered(result)) {
             console.log("Username is already registered.");
             this.closeConnection();
         } else {
-            console.log("Saving...");
-            this.save(input, [this.userData]);
+            this.hashPasswordAndSaveUserData(input);
         }
     }
 
