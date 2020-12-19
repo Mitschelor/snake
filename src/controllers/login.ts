@@ -1,7 +1,14 @@
 import { Authenticator } from "../../objects/database";
+import { Request, Response } from "express";
 
-const authenticator = new Authenticator();
+export const showLoginForm = (req: Request, res: Response) => {
+    res.render("login", {
+        layout: false,
+        title: "Login"
+    });
+};
 
-authenticator.passwordIsCorrect({
-    userName: "j"
-});
+export const initialize = (passport: any) => {
+    const authenticator = new Authenticator();
+    authenticator.loginUser(passport);
+};

@@ -5,14 +5,18 @@ import bodyparser from "body-parser";
 import dotenv from "dotenv";
 import flash from "express-flash";
 import session from "express-session";
+import passport from "passport";
+import { initialize } from "./controllers/login";
 
 import * as indexController from "./controllers/index";
 import * as signUpController from "./controllers/sign_up";
+import * as loginController from "./controllers/login";
 
 dotenv.config();
 
 const app = express();
 const session_secret: any = process.env.SESSION_SECRET;
+initialize(passport);
 
 const public_path = path.join(__dirname, "../public");
 console.log(`Public path is ${public_path}`);
@@ -25,6 +29,8 @@ app.use(session({
     resave: false,
     name: "Snake"
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(flash());
 app.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.success_msg = req.flash("success_msg");
@@ -41,5 +47,11 @@ app.set("view engine", "handlebars");
 app.get("/", indexController.home);
 app.get("/signup", signUpController.showSignUpForm);
 app.post("/sign_up", signUpController.saveUser);
+app.get("/loginform", loginController.showLoginForm);
+app.post("/login", passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/loginform",
+    failureFlash: true
+}));
 
 export default app;
