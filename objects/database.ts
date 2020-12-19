@@ -3,8 +3,11 @@ import { UserData } from "../models/user_data";
 import { Scores } from "../models/scores";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
+import { Request, Response } from "express";
+import passportLocal from "passport-local";
 
 dotenv.config();
+const LocalStrategy = passportLocal.Strategy;
 
 class Database {
     readonly uri: any;
@@ -150,27 +153,95 @@ export class Registrator extends Datasaver {
         }).catch((error) => console.log(error));
     }
 
-    protected checkIfDataIsAlreadyRegisteredAndSaveIfNotRegistered({ result, input }: { result: Data; input: Data; }) {
+    protected checkIfDataIsAlreadyRegisteredAndSaveIfNotRegistered(req: Request, res: Response, { result, input }: { result: Data; input: Data; }) {
         if (this.thisEmailIsRegistered(result)) {
             console.log("Email is Registered, checking username...");
             if (this.thisUsernameIsRegistered(result)) {
                 console.log("Username and Email are already registered");
                 this.closeConnection();
+                req.flash("err_msg", "This username and this email are already registered.");
+                res.redirect("signup");
             } else {
                 console.log("This email is already registered");
                 this.closeConnection();
+                req.flash("err_msg", "This email is already registered");
+                res.redirect("signup");
             }
         } else if (this.thisUsernameIsRegistered(result)) {
             console.log("Username is already registered.");
             this.closeConnection();
+            req.flash("err_msg", "This username is already registered.");
+            res.redirect("signup");
         } else {
             this.hashPasswordAndSaveUserData(input);
+            res.redirect("/");
         }
     }
 
-    saveUser(input: Data) {
+    saveUser(req: Request, res: Response, input: Data) {
         this.downloadUserData(input).then((result) => {
-            this.checkIfDataIsAlreadyRegisteredAndSaveIfNotRegistered({ result, input });
+            this.checkIfDataIsAlreadyRegisteredAndSaveIfNotRegistered(req, res, { result, input });
+        });
+    }
+}
+
+export class Authenticator extends Registrator {
+    async passwordIsCorrect(input: Data) {
+        let isPasswordCorrect: Promise<boolean>;
+        this.connect();
+        UserData.findOne({
+            "username": input.userName
+        }).then((result) => {
+            this.closeConnection();
+            const hashedPassword = result?.toObject().password;
+            isPasswordCorrect = bcrypt.compare(input.password, hashedPassword, (error, isMatch) => {
+                if (error) {
+                    throw new Error("Something went wrong!");
+                }
+                if (isMatch) {
+
+                } else {
+                    return false;
+                }
+            });
+        }).catch((error) => console.log(error));
+    }
+
+    loginUser(passport: any) {
+        passport.use(new LocalStrategy({
+            usernameField: "username",
+            passwordField: "password",
+            passReqToCallback: true
+        }, (req, username, password, done) => {
+            this.connect();
+            UserData.findOne({
+                "username": username
+            }).then((user) => {
+                this.closeConnection();
+                const hashedPassword = user?.toObject().password;
+                bcrypt.compare(password, hashedPassword, (error, isMatch) => {
+                    if (error) {
+                        throw new Error("Something went wrong!");
+                    }
+                    if (isMatch) {
+                        return done(null, user);
+                    } else {
+                        return done(null, false, req.flash("err_msg", "Wrong Password!"));
+                    }
+                });
+            }).catch((error) => console.log(error));
+        }));
+        passport.serializeUser((user: any, done: any) => {
+            done(null, user.id);
+        });
+        passport.deserializeUser((id: any, done: any) => {
+            this.connect();
+            UserData.findOne({
+                "id": id
+            }).then((result) => {
+                this.closeConnection();
+                return done(null, result);
+            });
         });
     }
 }

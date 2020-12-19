@@ -10,12 +10,11 @@ export const showSignUpForm = (req: Request, res: Response) => {
 
 export const saveUser = (req: Request, res: Response) => {
     const registrator = new Registrator();
-    registrator.saveUser({
+    registrator.saveUser(req, res, {
         firstName: req.body.firstname,
         lastName: req.body.lastname,
         email: req.body.email,
         userName: req.body.username,
         password: req.body.password
     });
-    res.redirect("/");
 };

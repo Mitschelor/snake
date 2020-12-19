@@ -1,12 +1,32 @@
 html,
 body {
+  display: flex;
+  align-items: center;
   overflow: hidden;
   position: fixed;
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0px;
+  background-color: rgb(49, 49, 49);
+  color: rgb(179, 170, 170);
 }
 canvas {
   -webkit-tap-highlight-color: transparent;
+  background-color: rgb(179, 170, 170);
+}
+main {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+}
+input {
+  padding: 10px;
 }
