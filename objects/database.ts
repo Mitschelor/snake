@@ -186,7 +186,7 @@ export class Registrator extends Datasaver {
 }
 
 export class Authenticator extends Registrator {
-    async passwordIsCorrect(input: Data) {
+    private async passwordIsCorrect(input: Data) {
         let isPasswordCorrect: Promise<boolean>;
         this.connect();
         UserData.findOne({

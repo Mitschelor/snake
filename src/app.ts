@@ -11,6 +11,7 @@ import { initialize } from "./controllers/login";
 import * as indexController from "./controllers/index";
 import * as signUpController from "./controllers/sign_up";
 import * as loginController from "./controllers/login";
+import * as menuController from "./controllers/menu";
 
 dotenv.config();
 
@@ -45,7 +46,8 @@ app.set("port", process.env.PORT || 3000);
 app.engine("handlebars", exphbs());
 app.set("view engine", "handlebars");
 
-app.get("/", indexController.home);
+app.get("/", menuController.showMenu);
+app.get("/game", indexController.home);
 app.get("/signup", signUpController.showSignUpForm);
 app.post("/sign_up", signUpController.saveUser);
 app.get("/loginform", loginController.showLoginForm);

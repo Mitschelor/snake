@@ -5,7 +5,7 @@ class Snake {
     readonly right: number[];
     readonly up: number[];
     readonly down: number[];
-    private score: any;
+    public score: any;
     private positionX: number[];
     private positionY: number[];
     private xSpeed: number;
@@ -184,6 +184,10 @@ class Snake {
         return newPosition;
     }
 
+    showScore() {
+        document.getElementById("score")!.innerHTML = this.score;
+    }
+
     move(direction: number[]): void {
         this.xSpeed = direction[0];
         this.ySpeed = direction[1];
@@ -195,9 +199,8 @@ class Snake {
             this.positionX.push(this.positionOfTheNewPartOfTheTail(this.positionX, this.xSpeed));
             this.positionY.push(this.positionOfTheNewPartOfTheTail(this.positionY, this.ySpeed));
         }
-        this.ctx.clearRect(500, 500, 100, 100);
         this.score++;
-        this.ctx.fillText(this.score, 570, 570, 100);
+        this.showScore();
     }
 }
 
