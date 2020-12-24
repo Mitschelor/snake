@@ -56,6 +56,9 @@
   },
   "pkg": {
     "scripts": [],
-    "assets": ["views/index.handlebars", "public/css/main.css"]
+    "assets": [
+      "views/index.handlebars",
+      "public/css/main.css"
+    ]
   }
 }

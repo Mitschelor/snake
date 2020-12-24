@@ -1,4 +1,5 @@
 class Snake {
+
     readonly height: number;
     readonly width: number;
     readonly left: number[];
@@ -13,6 +14,7 @@ class Snake {
     private moveTheSnake?: any;
     private canvas;
     private ctx;
+
     constructor() {
         this.positionX = [20, 0];
         this.positionY = [20, 20];
@@ -225,7 +227,7 @@ class Food {
     }
 
     private draw(): void {
-        this.context.fillStyle = "Red";
+        this.context.fillStyle = "brown";
         this.context.clearRect(this.positionX, this.positionY, this.width, this.height);
         this.context.fillRect(this.positionX, this.positionY, this.width, this.height);
     }
