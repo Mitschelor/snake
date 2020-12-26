@@ -146,6 +146,7 @@ class Snake {
     }
 
     private die(): void {
+        document.cookie = `Score=${this.score}`;
         this.stopMovement();
         food.stopDrawing();
         this.clearCanvas();

@@ -14,6 +14,9 @@
             {{#if err_msg}}
                 <p>{{err_msg}}</p>
             {{/if}}
+            {{#if success_msg}}
+                <p>{{success_msg}}</p>
+            {{/if}}
             <form action="/login" method="post">
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username">

@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import flash from "express-flash";
 import session from "express-session";
 import passport from "passport";
-import { initialize } from "./controllers/login";
+import Database from "./objects/database";
 
 import * as indexController from "./controllers/index";
 import * as signUpController from "./controllers/sign_up";
@@ -14,10 +14,12 @@ import * as loginController from "./controllers/login";
 import * as menuController from "./controllers/menu";
 
 dotenv.config();
+const authenticator = new Database.Authenticator();
+const registrator = new Database.Registrator();
 
 const app = express();
 const session_secret: any = process.env.SESSION_SECRET;
-initialize(passport);
+authenticator.loginUser(passport);
 
 const public_path = path.join(__dirname, "../public");
 console.log(`Public path is ${public_path}`);
@@ -49,12 +51,21 @@ app.set("view engine", "handlebars");
 app.get("/", menuController.showMenu);
 app.get("/game", indexController.home);
 app.get("/signup", signUpController.showSignUpForm);
-app.post("/sign_up", signUpController.saveUser);
+app.post("/sign_up", (req: Request, res: Response) => {
+    registrator.saveUser(req, res, {
+        firstName: req.body.firstname,
+        lastName: req.body.lastname,
+        email: req.body.email,
+        userName: req.body.username,
+        password: req.body.password
+    });
+});
 app.get("/loginform", loginController.showLoginForm);
 app.post("/login", passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/loginform",
     failureFlash: true
 }));
+app.get("/logout", authenticator.logout);
 
 export default app;

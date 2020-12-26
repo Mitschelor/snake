@@ -1,6 +1,7 @@
-import { Authenticator } from "../../objects/database";
+import Database from "../objects/database";
 import { Request, Response } from "express";
 
+const authenticator = new Database.Authenticator();
 export const showLoginForm = (req: Request, res: Response) => {
     res.render("login", {
         layout: false,
@@ -9,6 +10,5 @@ export const showLoginForm = (req: Request, res: Response) => {
 };
 
 export const initialize = (passport: any) => {
-    const authenticator = new Authenticator();
     authenticator.loginUser(passport);
 };
