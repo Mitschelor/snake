@@ -149,7 +149,7 @@ class Snake {
         this.stopMovement();
         food.stopDrawing();
         this.clearCanvas();
-        this.ctx.fillText("Game over!", 250, 250, 400);
+        this.ctx.fillText("Game over!", 250, 250, this.canvas.width);
         this.positionX = [20, 0];
         this.positionY = [20, 20];
     }
