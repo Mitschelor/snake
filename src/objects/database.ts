@@ -22,13 +22,15 @@ module Database {
             this.userData = "userData";
         }
 
-        protected connect() {
-            mongoose.connect(this.uri, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            })
-                .then(() => console.log("success"))
-                .catch((error) => console.log(error));
+        protected async connect(): Promise<void> {
+            try {
+                await mongoose.connect(this.uri, {
+                    useNewUrlParser: true,
+                    useUnifiedTopology: true,
+                });
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         protected closeConnection() {
@@ -48,8 +50,19 @@ module Database {
             });
         }
 
-        private saveScore(input: Data) {
-            console.log(input);
+        private async saveScore(input: Data): Promise<any> {
+            try {
+                await this.connect();
+                const result = await UserData.updateOne(
+                    { "_id": input.id },
+                    { "$push": { "score": input.score } }
+                );
+                return result;
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.closeConnection();
+            }
         }
 
         private saveUserData(input: Data) {
@@ -69,6 +82,7 @@ module Database {
             switch (name) {
                 case "score":
                     this.saveScore(input);
+                    break;
                 case "userData":
                     this.saveUserData(input);
                     break;
@@ -189,19 +203,13 @@ module Database {
                     console.log(error);
                 });
             }));
-            passport.serializeUser((user: any, done: any) => {
+            passport.serializeUser((req: Request, user: any, done: any) => {
                 done(null, user.id);
             });
-            passport.deserializeUser((id: any, done: any) => {
+            passport.deserializeUser((req: Request, id: any, done: any) => {
                 this.connect();
-                UserData.findOne({
-                    "id": id
-                }).then((result) => {
-                    this.closeConnection();
-                    return done(null, result);
-                }).catch((error) => {
-                    this.closeConnection();
-                    console.log(error);
+                UserData.findById(id, (error, result) => {
+                    done(error, result);
                 });
             });
         }
@@ -212,9 +220,9 @@ module Database {
         }
     }
 
-    interface Data {
+    export interface Data {
         id?: any,
-        score?: number[],
+        score?: number,
         firstName?: string,
         lastName?: string,
         userName?: string,
