@@ -5,11 +5,12 @@ import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import passportLocal from "passport-local";
+import { IGetUserAuthInfoRequest } from "../definitions";
 
 dotenv.config();
 const LocalStrategy = passportLocal.Strategy;
 
-export namespace Database {
+module Database {
     export class Database {
         readonly uri: any;
         readonly score: string;
@@ -48,11 +49,7 @@ export namespace Database {
         }
 
         private saveScore(input: Data) {
-            this.connect();
-            const instance = new Scores({
-                score: input.score
-            });
-            this.upload(instance);
+            console.log(input);
         }
 
         private saveUserData(input: Data) {
@@ -71,19 +68,9 @@ export namespace Database {
         protected findDocumentAndSaveData(input: Data, name: string) {
             switch (name) {
                 case "score":
-                    this.saveScore({
-                        score: input.score
-                    });
-                    break;
+                    this.saveScore(input);
                 case "userData":
-                    this.saveUserData({
-                        score: input.score,
-                        firstName: input.firstName,
-                        lastName: input.lastName,
-                        userName: input.userName,
-                        email: input.email,
-                        password: input.password
-                    });
+                    this.saveUserData(input);
                     break;
             }
         }
@@ -96,29 +83,34 @@ export namespace Database {
     }
 
     export class Registrator extends Datasaver {
-        async downloadUserData(user: Data): Promise<Data> {
-            this.connect();
-            const foundEmail: Promise<void | mongoose.Document | null> = UserData.findOne({
-                "email": user.email,
-            }).then((result) => {
+        async lookForEmailAndUsername(user: Data): Promise<Data> {
+            try {
+                this.connect();
+                const foundEmail: Promise<void | mongoose.Document | null> = UserData.findOne({
+                    "email": user.email,
+                }).then((result) => {
+                    return result;
+                }).catch((error) => {
+                    console.log(error);
+                });
+                const foundUsername = UserData.findOne({
+                    "username": user.userName
+                }).then((result) => {
+                    return result;
+                }).catch((error) => {
+                    console.log(error);
+                });
+                let email: any = await foundEmail;
+                let username: any = await foundUsername;
+                const result: Data = {
+                    email: email,
+                    userName: username
+                };
                 return result;
-            }).catch((error) => {
-                console.log(error);
-            });
-            const foundUsername = UserData.findOne({
-                "username": user.userName
-            }).then((result) => {
-                return result;
-            }).catch((error) => {
-                console.log(error);
-            });
-            let email: any = await foundEmail;
-            let username: any = await foundUsername;
-            const result: Data = {
-                email: email,
-                userName: username
-            };
-            return result;
+            } catch (error) {
+                this.closeConnection();
+                throw new Error(`Something went wrong! ${error}`);
+            }
         }
 
         protected userIsAlreadyRegistered(userData: unknown): boolean {
@@ -163,14 +155,13 @@ export namespace Database {
         }
 
         saveUser(req: Request, res: Response, input: Data) {
-            this.downloadUserData(input).then((result) => {
+            this.lookForEmailAndUsername(input).then((result) => {
                 this.checkIfDataIsAlreadyRegisteredAndSaveIfNotRegistered(req, res, { result, input });
-            });
+            }).catch((error) => console.log(error));
         }
     }
 
     export class Authenticator extends Database {
-
         loginUser(passport: any) {
             passport.use(new LocalStrategy({
                 usernameField: "username",
@@ -222,6 +213,7 @@ export namespace Database {
     }
 
     interface Data {
+        id?: any,
         score?: number[],
         firstName?: string,
         lastName?: string,

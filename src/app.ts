@@ -7,13 +7,19 @@ import flash from "express-flash";
 import session from "express-session";
 import passport from "passport";
 import Database from "./objects/database";
+import cookieParser from "cookie-parser";
+import { IGetUserAuthInfoRequest } from "./definitions";
 
 import * as indexController from "./controllers/index";
 import * as signUpController from "./controllers/sign_up";
 import * as loginController from "./controllers/login";
 import * as menuController from "./controllers/menu";
 
+
+
 dotenv.config();
+const database = new Database.Database();
+const datasaver = new Database.Datasaver();
 const authenticator = new Database.Authenticator();
 const registrator = new Database.Registrator();
 
@@ -24,6 +30,7 @@ authenticator.loginUser(passport);
 const public_path = path.join(__dirname, "../public");
 console.log(`Public path is ${public_path}`);
 path.join(__dirname, "../views/index.handlebars");
+app.use(cookieParser(session_secret));
 app.use(express.static(public_path));
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
@@ -42,7 +49,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     res.locals.neutral_msg = req.flash("netral_msg");
     next();
 });
-
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.locals.currentUser = req.user;
+    next();
+});
 app.set("views", path.join(__dirname, "../views"));
 app.set("port", process.env.PORT || 3000);
 app.engine("handlebars", exphbs());
@@ -67,5 +77,11 @@ app.post("/login", passport.authenticate("local", {
     failureFlash: true
 }));
 app.get("/logout", authenticator.logout);
+app.get("/game/save-score", (req: IGetUserAuthInfoRequest, res: Response) => {
+    datasaver.save({
+        id: req.user
+    }, [database.score]);
+    res.redirect("/game");
+});
 
 export default app;

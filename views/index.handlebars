@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="css/main.css">
-    <title>Document</title>
-    <script src="js/game_objects.js"></script>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/main.css">
+  <title>Document</title>
+  <script src="js/game_objects.js"></script>
+</head>
 
-  <body>
-    <main id="player_dead">
-      <h1>You died!</h1>
-    </main>
-    <main>
-      <p id="score"></p>
-      <canvas id="canvas" width="600" height="600" style="border: 1px solid black"></canvas>
-      <button onclick="startGame()" value="start" id="startbutton">Start</button>
-    </main>
-    <script src="js/gameplay.js"></script>
-    <script src="js/menu.js"></script>
-  </body>
+<body>
+  <main id="player_dead">
+    <h1>You died!</h1>
+  </main>
+  <main>
+    <p id="score"></p>
+    <canvas id="canvas" width="600" height="600" style="border: 1px solid black"></canvas>
+    <button onclick="startGame()" value="start" id="startbutton">Start</button>
+    <a href="/game/save-score">Save the score</a>
+  </main>
+  <script src="js/gameplay.js"></script>
+  <script src="js/menu.js"></script>
+</body>
 
 </html>
