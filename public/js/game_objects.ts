@@ -1,5 +1,4 @@
 class Snake {
-
     readonly height: number;
     readonly width: number;
     readonly left: number[];
@@ -30,6 +29,7 @@ class Snake {
         this.canvas = <HTMLCanvasElement>document.getElementById("canvas");
         this.ctx = <CanvasRenderingContext2D>this.canvas.getContext("2d");
     }
+
     getPositionX(): number[] {
         return this.positionX;
     }

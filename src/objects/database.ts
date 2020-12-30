@@ -1,11 +1,9 @@
 import mongoose from "mongoose";
 import { UserData } from "../../models/user_data";
-import { Scores } from "../../models/scores";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import passportLocal from "passport-local";
-import { IGetUserAuthInfoRequest } from "../definitions";
 
 dotenv.config();
 const LocalStrategy = passportLocal.Strategy;
@@ -99,7 +97,7 @@ module Database {
     export class Registrator extends Datasaver {
         async lookForEmailAndUsername(user: Data): Promise<Data> {
             try {
-                this.connect();
+                await this.connect();
                 const foundEmail: Promise<void | mongoose.Document | null> = UserData.findOne({
                     "email": user.email,
                 }).then((result) => {
@@ -137,7 +135,6 @@ module Database {
         }
 
         private hashPasswordAndSaveUserData(input: Data) {
-            console.log("Saving...");
             bcrypt.hash(input.password, 10).then((hash) => {
                 input.password = hash;
                 this.save(input, [this.userData]);
