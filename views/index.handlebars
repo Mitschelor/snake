@@ -12,12 +12,24 @@
 <body>
   <main id="player_dead">
     <h1>You died!</h1>
+    {{#if success_msg}}
+    <h2>{{success_msg}}</h2>
+    {{/if}}
+    <table>
+      <ul>
+        <li><button onclick="startGame()" value="start" id="startbutton">Try again!</button></li>
+        <li><a href="/game/save-score" id="score-saver">Save the score</a></li>
+      </ul>
+    </table>
   </main>
-  <main>
-    <p id="score"></p>
+  <main id="game">
+    <h1>Snake</h1>
+    {{#if success_msg}}
+    <h2>{{success_msg}}</h2>
+    {{/if}}
     <canvas id="canvas" width="600" height="600" style="border: 1px solid black"></canvas>
     <button onclick="startGame()" value="start" id="startbutton">Start</button>
-    <a href="/game/save-score">Save the score</a>
+    <p id="score"></p>
   </main>
   <script src="js/gameplay.js"></script>
   <script src="js/menu.js"></script>

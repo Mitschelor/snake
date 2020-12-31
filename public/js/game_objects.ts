@@ -146,6 +146,8 @@ class Snake {
     }
 
     private die(): void {
+        document.getElementById("player_dead")!.style.display = "flex";
+        document.getElementById("game")!.style.display = "none";
         document.cookie = `Score=${this.score}`;
         this.stopMovement();
         food.stopDrawing();
@@ -188,7 +190,7 @@ class Snake {
     }
 
     showScore() {
-        document.getElementById("score")!.innerHTML = this.score;
+        document.getElementById("score")!.innerHTML = `Score: ${this.score}`;
     }
 
     move(direction: number[]): void {

@@ -20,37 +20,33 @@ module Database {
             this.userData = "userData";
         }
 
-        protected async connect(): Promise<void> {
-            try {
-                await mongoose.connect(this.uri, {
-                    useNewUrlParser: true,
-                    useUnifiedTopology: true,
-                });
-            } catch (error) {
-                console.log(error);
-            }
+        protected connect() {
+            mongoose.connect(this.uri, {
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            });
         }
 
-        protected closeConnection() {
-            mongoose.connection.close();
-            console.log("Connection closed");
-        }
+        // protected closeConnection() {
+        //     mongoose.connection.close();
+        //     console.log("Connection closed");
+        // }
     }
 
     export class Datasaver extends Database {
         private upload(instance: mongoose.Document) {
             instance.save().then(() => {
-                this.closeConnection();
+                // this.closeConnection();
                 console.log("Saved");
             }).catch((error) => {
-                this.closeConnection();
+                // this.closeConnection();
                 console.log(error);
             });
         }
 
         private async saveScore(input: Data): Promise<any> {
             try {
-                await this.connect();
+                this.connect();
                 const result = await UserData.updateOne(
                     { "_id": input.id },
                     { "$push": { "score": input.score } }
@@ -59,7 +55,7 @@ module Database {
             } catch (error) {
                 console.log(error);
             } finally {
-                this.closeConnection();
+                // this.closeConnection();
             }
         }
 
@@ -76,10 +72,18 @@ module Database {
             this.upload(instance);
         }
 
-        protected findDocumentAndSaveData(input: Data, name: string) {
+        protected findDocumentAndSaveData(req: Request, res: Response, input: Data, name: string) {
             switch (name) {
                 case "score":
-                    this.saveScore(input);
+                    this.saveScore(input).then((result) => {
+                        console.log(result);
+                        req.flash("success_msg", "Your score has been saved successfully.");
+                        res.redirect("/game");
+                    }).catch((error) => {
+                        console.trace(error);
+                        req.flash("err_msg", "Something went wrong!");
+                        res.redirect("/game");
+                    });
                     break;
                 case "userData":
                     this.saveUserData(input);
@@ -87,9 +91,9 @@ module Database {
             }
         }
 
-        save(input: Data, documentNames: string[]) {
+        save(req: Request, res: Response, input: Data, documentNames: string[]) {
             for (let name of documentNames) {
-                this.findDocumentAndSaveData(input, name);
+                this.findDocumentAndSaveData(req, res, input, name);
             }
         }
     }
@@ -97,7 +101,7 @@ module Database {
     export class Registrator extends Datasaver {
         async lookForEmailAndUsername(user: Data): Promise<Data> {
             try {
-                await this.connect();
+                this.connect();
                 const foundEmail: Promise<void | mongoose.Document | null> = UserData.findOne({
                     "email": user.email,
                 }).then((result) => {
@@ -105,7 +109,7 @@ module Database {
                 }).catch((error) => {
                     console.log(error);
                 });
-                const foundUsername = UserData.findOne({
+                const foundUsername: Promise<void | mongoose.Document | null> = UserData.findOne({
                     "username": user.userName
                 }).then((result) => {
                     return result;
@@ -120,7 +124,6 @@ module Database {
                 };
                 return result;
             } catch (error) {
-                this.closeConnection();
                 throw new Error(`Something went wrong! ${error}`);
             }
         }
@@ -134,10 +137,10 @@ module Database {
             }
         }
 
-        private hashPasswordAndSaveUserData(input: Data) {
+        private hashPasswordAndSaveUserData(req: Request, res: Response, input: Data) {
             bcrypt.hash(input.password, 10).then((hash) => {
                 input.password = hash;
-                this.save(input, [this.userData]);
+                this.save(req, res, input, [this.userData]);
             }).catch((error) => console.log(error));
         }
 
@@ -146,20 +149,20 @@ module Database {
             const thisUsernameIsRegistered: boolean = result.userName != null;
             if (thisEmailIsRegistered) {
                 if (thisUsernameIsRegistered) {
-                    this.closeConnection();
+                    // this.closeConnection();
                     req.flash("err_msg", "This username and this email are already registered.");
                     res.redirect("signup");
                 } else {
-                    this.closeConnection();
+                    // this.closeConnection();
                     req.flash("err_msg", "This email is already registered");
                     res.redirect("signup");
                 }
             } else if (thisUsernameIsRegistered) {
-                this.closeConnection();
+                // this.closeConnection();
                 req.flash("err_msg", "This username is already registered.");
                 res.redirect("signup");
             } else {
-                this.hashPasswordAndSaveUserData(input);
+                this.hashPasswordAndSaveUserData(req, res, input);
                 req.flash("success_msg", "You have been successfully registered.");
                 res.redirect("/loginform");
             }
@@ -183,7 +186,7 @@ module Database {
                 UserData.findOne({
                     "username": username
                 }).then((user) => {
-                    this.closeConnection();
+                    // this.closeConnection();
                     const hashedPassword = user?.toObject().password;
                     bcrypt.compare(password, hashedPassword, (error, isMatch) => {
                         if (error) {
@@ -196,17 +199,18 @@ module Database {
                         }
                     });
                 }).catch((error) => {
-                    this.closeConnection();
+                    // this.closeConnection();
                     console.log(error);
                 });
             }));
-            passport.serializeUser((req: Request, user: any, done: any) => {
+            passport.serializeUser((user: any, done: any) => {
                 done(null, user.id);
             });
-            passport.deserializeUser((req: Request, id: any, done: any) => {
+            passport.deserializeUser((id: any, done: any) => {
                 this.connect();
                 UserData.findById(id, (error, result) => {
                     done(error, result);
+                    // this.closeConnection();
                 });
             });
         }

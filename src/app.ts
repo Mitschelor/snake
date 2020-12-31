@@ -38,7 +38,10 @@ app.use(session({
     saveUninitialized: false,
     resave: false,
     name: "Snake",
-    cookie: { secure: false }
+    cookie: {
+        secure: false,
+        maxAge: 60 * 60 * 1000
+    }
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -71,19 +74,13 @@ app.post("/login", passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/loginform",
     failureFlash: true
-}), (req: Request, res: Response) => {
-    datasaver.save({
-        id: req.user?.id,
-        score: 75
-    }, [database.score]);
-});
+}));
 app.get("/logout", authenticator.logout);
 app.get("/game/save-score", (req: Request, res: Response) => {
-    datasaver.save({
+    datasaver.save(req, res, {
         id: req.user?.id,
         score: req.cookies.Score
     }, [database.score]);
-    res.redirect("/game");
 });
 
 export default app;

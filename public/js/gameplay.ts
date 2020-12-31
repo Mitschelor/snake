@@ -1,7 +1,13 @@
 const snake = new Snake();
 const food = new Food();
 
+window.onload = () => {
+    snake.showScore();
+};
+
 const startGame = () => {
+    document.getElementById("player_dead")!.style.display = "none";
+    document.getElementById("game")!.style.display = "flex";
     snake.score = 0;
     snake.stopMovement();
     snake.clearCanvas();

@@ -13,7 +13,33 @@ h1 {
   margin-bottom: 0;
 }
 #startbutton {
-  width: 600px;
+  width: 300px;
+  font-size: 50px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-decoration: none;
+  color: rgb(179, 170, 170);
+  background-color: rgb(87, 83, 83);
+  border: solid black;
+}
+#startbutton:hover {
+  background-color: rgb(133, 128, 128);
+  color: rgb(58, 57, 57);
+}
+#score-saver {
+  width: 300px;
+  font-size: 50px;
+  display: block;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-decoration: none;
+  color: rgb(179, 170, 170);
+  background-color: rgb(87, 83, 83);
+  border: solid black;
+}
+#score-saver:hover {
+  background-color: rgb(133, 128, 128);
+  color: rgb(58, 57, 57);
 }
 canvas {
   -webkit-tap-highlight-color: transparent;
@@ -26,6 +52,11 @@ main {
   align-items: center;
   flex-direction: column;
   width: 100%;
+}
+#player_dead li {
+  list-style-type: none;
+  float: left;
+  margin-right: 20px;
 }
 form {
   display: flex;
