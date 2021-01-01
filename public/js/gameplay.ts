@@ -47,5 +47,8 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
             snake.stopMovement();
             snake.move(snake.down);
             break;
+        case "Escape":
+            snake.stopMovement();
+            break;
     }
 });
