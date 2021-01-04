@@ -46,6 +46,23 @@ class Snake {
         clearInterval(snake.moveTheSnake);
     }
 
+    switchScreens(desiredScreen: string) {
+        let displayMode: any;
+        if (desiredScreen === "game") {
+            displayMode = {
+                playerDead: "none",
+                game: "flex"
+            };
+        } else {
+            displayMode = {
+                playerDead: "flex",
+                game: "none"
+            };
+        }
+        document.getElementById("player_dead")!.style.display = displayMode.playerDead;
+        document.getElementById("game")!.style.display = displayMode.game;
+    }
+
     private draw(index: number): void {
         this.ctx.fillRect(this.positionX[index], this.positionY[index], this.height, this.width);
     }
@@ -146,8 +163,7 @@ class Snake {
     }
 
     private die(): void {
-        document.getElementById("player_dead")!.style.display = "flex";
-        document.getElementById("game")!.style.display = "none";
+        this.switchScreens("player_dead");
         document.cookie = `Score=${this.score}`;
         this.stopMovement();
         food.stopDrawing();

@@ -6,8 +6,7 @@ window.onload = () => {
 };
 
 const startGame = () => {
-    document.getElementById("player_dead")!.style.display = "none";
-    document.getElementById("game")!.style.display = "flex";
+    snake.switchScreens("game");
     snake.score = 0;
     snake.stopMovement();
     snake.clearCanvas();
