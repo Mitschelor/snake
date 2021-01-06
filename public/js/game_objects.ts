@@ -207,6 +207,7 @@ class Snake {
 
     showScore() {
         document.getElementById("score")!.innerHTML = `Score: ${this.score}`;
+        document.getElementById("score_after_death")!.innerHTML = `You scored ${this.score} points`;
     }
 
     move(direction: number[]): void {
